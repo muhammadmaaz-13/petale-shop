@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="logo"><span class="dot"></span>Petalé</div>
+      <p class="sub">Admin dashboard</p>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="login-error"><%= error %></div>
+      <% } %>
+
+      <form action="/admin/login" method="POST" style="display:flex; flex-direction:column; gap:16px;">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" name="username" required autofocus>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" required>
+        </div>
+        <button type="submit" class="btn-primary" style="justify-content:center; margin-top:6px;">Log in</button>
+      </form>
+
+      <p class="login-hint">Default: admin / petale2026 — change this in <code>config.js</code>.</p>
+    </div>
+  </div>
+</body>
+</html>

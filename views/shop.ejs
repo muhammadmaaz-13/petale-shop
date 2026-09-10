@@ -1,0 +1,40 @@
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="page-hero-blob"></div>
+  <div class="container page-hero-inner">
+    <div class="eyebrow-tag">The full collection</div>
+    <h1>Shop the <em>ritual</em></h1>
+    <p class="lede">Every formula, in one place. Filter by category to build your routine.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:50px;">
+  <div class="container">
+    <div class="filter-row reveal">
+      <a href="/shop" class="filter-chip <%= activeCategory === 'all' ? 'active' : '' %>">All</a>
+      <% categories.forEach(cat => { %>
+        <a href="/shop?category=<%= cat %>" class="filter-chip <%= activeCategory === cat ? 'active' : '' %>"><%= cat.charAt(0).toUpperCase() + cat.slice(1) %></a>
+      <% }) %>
+    </div>
+
+    <% if (typeof searchQuery !== 'undefined' && searchQuery) { %>
+      <p style="color:var(--plum-soft); font-size:14px; margin-bottom:20px;">Showing results for "<%= searchQuery %>" — <a href="/shop" style="color:var(--rose-deep);">clear search</a></p>
+    <% } %>
+
+    <% if (products.length === 0) { %>
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#DF6B9C" stroke-width="1.4"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <p>No products found.</p>
+      </div>
+    <% } else { %>
+      <div class="products-grid reveal-stagger">
+        <% products.forEach(p => { %>
+          <%- include('partials/product-card', { p }) %>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,72 @@
+<%- include('partials/header') %>
+
+<section class="container product-detail">
+  <div class="pd-visual reveal">
+    <% if (product.image) { %>
+      <img src="<%= product.image %>" alt="<%= product.name %>">
+    <% } else { %>
+      <div class="pd-placeholder" style="background:<%= product.accentColor %>;"><%= product.name.charAt(0) %></div>
+    <% } %>
+  </div>
+  <div class="pd-info reveal">
+    <span class="cat-label"><%= product.category.charAt(0).toUpperCase() + product.category.slice(1) %><% if (product.tag) { %> · <%= product.tag %><% } %></span>
+    <h1><%= product.name %></h1>
+
+    <div class="rating-row">
+      <%- include('partials/stars', { rating: product.rating, count: product.reviewCount }) %>
+    </div>
+
+    <span class="price-row" style="display:block; margin-bottom:24px;">
+      <% if (product.onSale && product.compareAtPrice) { %>
+        <span class="compare-price">$<%= product.compareAtPrice %></span>
+      <% } %>
+      <span class="price">$<%= product.price %></span>
+    </span>
+
+    <p class="desc"><%= product.description %></p>
+
+    <div class="qty-selector">
+      <button type="button" class="qty-btn" id="qtyMinus">–</button>
+      <span class="qty-val" id="qtyVal">1</span>
+      <button type="button" class="qty-btn" id="qtyPlus">+</button>
+      <input type="hidden" id="qtyInput" value="1">
+    </div>
+
+    <button class="btn-primary add-btn" data-id="<%= product.id %>">
+      <svg class="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      <span class="btn-label">Add to bag</span>
+    </button>
+
+    <p class="stock-note"><%= product.stock > 0 ? product.stock + ' in stock' : 'Currently out of stock' %></p>
+  </div>
+</section>
+
+<% if (related.length) { %>
+<section class="section related-strip" style="padding-top:20px;">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>You might also <em>like</em></h2>
+    </div>
+    <div class="products-grid reveal-stagger">
+      <% related.forEach(p => { %>
+        <%- include('partials/product-card', { p }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<%- include('partials/footer') %>
+
+<script>
+  (function(){
+    const minus = document.getElementById('qtyMinus');
+    const plus = document.getElementById('qtyPlus');
+    const val = document.getElementById('qtyVal');
+    const input = document.getElementById('qtyInput');
+    let qty = 1;
+    minus.addEventListener('click', () => { qty = Math.max(1, qty - 1); val.textContent = qty; input.value = qty; });
+    plus.addEventListener('click', () => { qty = qty + 1; val.textContent = qty; input.value = qty; });
+  })();
+</script>

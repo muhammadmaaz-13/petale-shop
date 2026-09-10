@@ -1,0 +1,13 @@
+<%
+  var _r = Math.round((typeof rating !== 'undefined' ? rating : 5) * 2) / 2;
+  var _full = Math.floor(_r);
+  var _half = _r - _full === 0.5;
+%>
+<span class="stars" aria-hidden="true">
+  <% for (var i = 0; i < 5; i++) { %>
+    <% if (i < _full) { %>&#9733;<% } else if (i === _full && _half) { %>&#189;<% } else { %>&#9734;<% } %>
+  <% } %>
+</span>
+<% if (typeof count !== 'undefined' && count > 0) { %>
+  <span class="review-count"><%= count %> review<%= count === 1 ? '' : 's' %></span>
+<% } %>

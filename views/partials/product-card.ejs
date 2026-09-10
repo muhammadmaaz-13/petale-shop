@@ -1,0 +1,41 @@
+<div class="product-card">
+  <% if (p.onSale) { %><span class="product-tag badge-sale">Sale</span>
+  <% } else if (p.tag) { %><span class="product-tag"><%= p.tag %></span><% } %>
+
+  <a href="/product/<%= p.id %>" class="product-title-link">
+    <div class="product-visual">
+      <% if (p.image) { %>
+        <img class="img-primary" src="<%= p.image %>" alt="<%= p.name %>">
+        <% if (p.image2) { %>
+          <img class="img-secondary" src="<%= p.image2 %>" alt="<%= p.name %>">
+        <% } %>
+      <% } else { %>
+        <div class="product-placeholder" style="background:<%= p.accentColor %>;"><%= p.name.charAt(0) %></div>
+      <% } %>
+    </div>
+  </a>
+
+  <div class="product-info">
+    <a href="/product/<%= p.id %>" class="product-title-link"><h3><%= p.name %></h3></a>
+
+    <div class="rating-row">
+      <%- include('stars', { rating: p.rating, count: p.reviewCount }) %>
+    </div>
+
+    <p class="desc"><%= p.description %></p>
+
+    <div class="product-footer">
+      <span class="price-row">
+        <% if (p.onSale && p.compareAtPrice) { %>
+          <span class="compare-price">$<%= p.compareAtPrice %></span>
+        <% } %>
+        <span class="price">$<%= p.price %></span>
+      </span>
+      <button class="add-btn" data-id="<%= p.id %>">
+        <svg class="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span class="btn-label">Add</span>
+      </button>
+    </div>
+  </div>
+</div>

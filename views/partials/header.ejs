@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="announce-bar" id="announceBar">
+  <div class="announce-track">
+    <% [...siteConfig.announcements, ...siteConfig.announcements].forEach(msg => { %>
+      <span class="announce-item"><%= msg %></span>
+    <% }) %>
+  </div>
+</div>
+
+<header id="siteHeader">
+  <nav>
+    <a href="/" class="logo"><span class="dot"></span>Petalé</a>
+
+    <ul class="nav-links">
+      <li><a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">Home</a></li>
+      <li><a href="/shop" class="<%= currentPath.startsWith('/shop') ? 'active' : '' %>">Shop All</a></li>
+      <li class="has-mega">
+        <a href="/shop">Shop By ▾</a>
+        <div class="mega-menu">
+          <a href="/shop" class="mega-item">All products</a>
+          <% allCategories.forEach(cat => { %>
+            <a href="/shop?category=<%= cat %>" class="mega-item"><%= cat.charAt(0).toUpperCase() + cat.slice(1) %></a>
+          <% }) %>
+        </div>
+      </li>
+      <li><a href="/about" class="<%= currentPath === '/about' ? 'active' : '' %>">About</a></li>
+      <li><a href="/contact" class="<%= currentPath === '/contact' ? 'active' : '' %>">Contact</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <button class="icon-btn" id="searchBtn" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </button>
+      <button class="cart-btn" id="cartBtn" aria-label="Open cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count <%= cartCount > 0 ? 'show' : '' %>" id="cartCount"><%= cartCount %></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- Simple search overlay -->
+<div class="search-overlay" id="searchOverlay">
+  <form class="search-box" action="/shop" method="GET">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input type="text" name="q" placeholder="Search products..." autofocus>
+  </form>
+  <button class="search-close" id="searchClose">✕</button>
+</div>

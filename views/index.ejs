@@ -1,0 +1,160 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+  <div class="hero-bg-shape"></div>
+  <div id="petals"></div>
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <div class="eyebrow-tag">Small-batch, cruelty-free, made for real skin</div>
+      <h1>
+        <span><em>Skin that</em></span>
+        <span><em>blooms,</em></span>
+        <span><em>gently.</em></span>
+      </h1>
+      <p class="lede">Petalé blends botanical actives with dermatologist-backed formulas — so your routine feels like a ritual, not a chore.</p>
+      <div class="hero-ctas">
+        <a href="/shop" class="btn-primary">Shop bestsellers</a>
+        <a href="#ritual" class="btn-text">See the ritual <span>→</span></a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="ring-orbit r1"><span class="orbit-dot"></span></div>
+      <div class="ring-orbit r2"></div>
+      <img src="https://images.pexels.com/photos/13608713/pexels-photo-13608713.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Petalé skincare bottle">
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
+</section>
+
+<section class="section" id="shop-preview">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>Our <em>bestsellers</em></h2>
+      <p>A few essentials to start with. The full shop has everything.</p>
+    </div>
+
+    <% if (featured.length === 0) { %>
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#DF6B9C" stroke-width="1.4"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <p>No products yet — add your first one from the <a href="/admin/login" style="color:var(--rose-deep);">admin dashboard</a>.</p>
+      </div>
+    <% } else { %>
+      <div class="products-grid reveal-stagger">
+        <% featured.forEach(p => { %>
+          <%- include('partials/product-card', { p }) %>
+        <% }) %>
+      </div>
+      <div style="text-align:center; margin-top:50px;">
+        <a href="/shop" class="btn-secondary">View full shop <span>→</span></a>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<section class="marquee-section">
+  <div class="marquee-track">
+    <% const ingredients = ['Rosewater','Hyaluronic Acid','Niacinamide','Cherry Blossom','Peptides','Ceramides','Vitamin C','Squalane','Oat Extract','Centella Asiatica']; %>
+    <% [...ingredients, ...ingredients].forEach(name => { %>
+      <span class="marquee-item"><%= name %><span class="sep"></span></span>
+    <% }) %>
+  </div>
+</section>
+
+<section class="section" id="ritual">
+  <div class="container ritual">
+    <div class="ritual-visual reveal">
+      <div class="ritual-blob"></div>
+    </div>
+    <div class="ritual-copy">
+      <div class="section-head" style="margin-bottom:34px;">
+        <h2>The <em>Petalé</em> ritual</h2>
+      </div>
+      <div class="ritual-steps reveal-stagger">
+        <div class="ritual-step">
+          <span class="step-num">01</span>
+          <div><h4>Cleanse, softly</h4><p>Start by lifting away the day without stripping your skin's barrier.</p></div>
+        </div>
+        <div class="ritual-step">
+          <span class="step-num">02</span>
+          <div><h4>Tone & balance</h4><p>Prep skin so it actually absorbs what comes next.</p></div>
+        </div>
+        <div class="ritual-step">
+          <span class="step-num">03</span>
+          <div><h4>Treat & hydrate</h4><p>Flood in moisture and active ingredients, layer by layer.</p></div>
+        </div>
+        <div class="ritual-step">
+          <span class="step-num">04</span>
+          <div><h4>Seal it in</h4><p>Lock everything in so it can get to work overnight.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="testimonial-wrap reveal">
+      <% const testimonials = [
+        {quote:"My skin has never felt this calm. One product alone changed my whole routine.", name:"Amina R., verified buyer"},
+        {quote:"Everything sinks in fast and I actually see a difference by the next morning.", name:"Sara K., verified buyer"},
+        {quote:"Smells incredible, feels luxurious, and my redness has genuinely gone down.", name:"Farah T., verified buyer"}
+      ]; %>
+      <% testimonials.forEach((t,i) => { %>
+        <div class="testimonial <%= i===0?'active':'' %>" data-i="<%= i %>">
+          <blockquote>"<%= t.quote %>"</blockquote>
+          <cite><%= t.name %></cite>
+        </div>
+      <% }) %>
+      <div class="dots">
+        <% testimonials.forEach((t,i) => { %>
+          <span class="dot-btn <%= i===0?'active':'' %>" data-i="<%= i %>"></span>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section reviews-section">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>Loved by <em>real skin</em></h2>
+      <p>Real feedback from real customers — not stock photos.</p>
+    </div>
+    <div class="reviews-summary reveal">
+      <div class="reviews-score">
+        <span class="big-score">4.8</span>
+        <div>
+          <span class="stars" style="font-size:20px;">★★★★★</span>
+          <p>Based on 412 reviews</p>
+        </div>
+      </div>
+      <div class="reviews-bars">
+        <% const dist = [ [5,82], [4,13], [3,3], [2,1], [1,1] ]; %>
+        <% dist.forEach(([star, pct]) => { %>
+          <div class="rating-bar-row">
+            <span><%= star %> star</span>
+            <div class="rating-bar-track"><div class="rating-bar-fill" style="width:<%= pct %>%;"></div></div>
+            <span><%= pct %>%</span>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="newsletter reveal">
+      <div>
+        <h2>Get 15% off<br>your first order</h2>
+        <p>Skincare tips, early access to new drops, and the occasional discount code. No spam, ever.</p>
+      </div>
+      <form class="newsletter-form" id="newsletterForm" data-newsletter>
+        <input type="email" placeholder="you@example.com" required>
+        <button type="submit"><span class="label">Subscribe</span></button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

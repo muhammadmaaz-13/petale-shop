@@ -1,0 +1,57 @@
+<%- include('partials/header') %>
+
+<section class="container cart-page">
+  <div class="section-head reveal" style="margin-bottom:34px;">
+    <h2>Your <em>bag</em></h2>
+  </div>
+
+  <% if (items.length === 0) { %>
+    <div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#DF6B9C" stroke-width="1.4"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <p>Your bag is empty.</p>
+      <p style="margin-top:16px;"><a href="/shop" class="btn-secondary">Browse the shop <span>→</span></a></p>
+    </div>
+  <% } else { %>
+    <div class="cart-layout">
+      <div class="cart-lines">
+        <% items.forEach(item => { %>
+          <div class="cart-line">
+            <div class="cart-line-visual">
+              <% if (item.product.image) { %>
+                <img src="<%= item.product.image %>" alt="<%= item.product.name %>">
+              <% } else { %>
+                <div class="product-placeholder" style="background:<%= item.product.accentColor %>;"><%= item.product.name.charAt(0) %></div>
+              <% } %>
+            </div>
+            <div class="cart-line-info">
+              <h4><%= item.product.name %></h4>
+              <form class="qty-row" action="/cart/update/<%= item.product.id %>" method="POST">
+                <button type="submit" name="delta" value="-1" class="qty-btn">–</button>
+                <span><%= item.qty %></span>
+                <button type="submit" name="delta" value="1" class="qty-btn">+</button>
+              </form>
+            </div>
+            <div>
+              <div class="cart-line-price">$<%= item.lineTotal %></div>
+              <form action="/cart/remove/<%= item.product.id %>" method="POST">
+                <button type="submit" class="remove-link" style="background:none;border:none;">Remove</button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+
+      <div class="summary-card">
+        <h3>Order summary</h3>
+        <div class="summary-row"><span>Subtotal</span><span>$<%= total %></span></div>
+        <div class="summary-row"><span>Shipping</span><span>Calculated at checkout</span></div>
+        <div class="summary-row total"><span>Total</span><span>$<%= total %></span></div>
+        <form action="/checkout" method="POST">
+          <button type="submit" class="checkout-btn">Checkout <span>→</span></button>
+        </form>
+      </div>
+    </div>
+  <% } %>
+</section>
+
+<%- include('partials/footer') %>

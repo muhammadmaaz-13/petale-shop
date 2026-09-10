@@ -1,0 +1,47 @@
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="page-hero-blob"></div>
+  <div class="container page-hero-inner">
+    <div class="eyebrow-tag">Get in touch</div>
+    <h1>We'd love to <em>hear</em> from you</h1>
+    <p class="lede">Questions about ingredients, an order, or a wholesale inquiry — send it over.</p>
+  </div>
+</section>
+
+<section class="contact-body container">
+  <% if (sent) { %>
+    <div class="success-box reveal" style="max-width:560px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      <h2 style="margin-bottom:10px;">Message sent</h2>
+      <p style="color:var(--plum-soft);">Thanks for reaching out — we'll get back to you soon. (Note: this is a demo form, no email is actually sent yet.)</p>
+    </div>
+  <% } else { %>
+    <div class="contact-grid">
+      <form class="contact-form reveal" action="/contact" method="POST">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" name="name" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea name="message" required></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="align-self:flex-start;">Send message</button>
+      </form>
+      <div class="contact-info-card reveal">
+        <h3>Other ways to reach us</h3>
+        <p>Prefer email or social? We're around.</p>
+        <div class="info-row">✉️ hello@petale.example</div>
+        <div class="info-row">📍 Studio hours: Mon–Fri, 9am–5pm</div>
+        <div class="info-row">💬 Usually reply within 1 business day</div>
+      </div>
+    </div>
+  <% } %>
+</section>
+
+<%- include('partials/footer') %>

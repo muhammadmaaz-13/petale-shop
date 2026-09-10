@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+<%- include('../partials/admin-nav') %>
+
+<div class="admin-wrap">
+  <div class="admin-header-row">
+    <h1><%= product ? 'Edit product' : 'Add product' %></h1>
+    <a href="/admin/dashboard" class="btn-cancel">Back to products</a>
+  </div>
+
+  <div class="form-card">
+    <form action="<%= product ? '/admin/products/' + product.id + '/edit' : '/admin/products/new' %>" method="POST" enctype="multipart/form-data">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Product name</label>
+          <input type="text" name="name" required value="<%= product ? product.name : '' %>" placeholder="e.g. Rose Quartz Cleanser">
+        </div>
+
+        <div class="form-group full">
+          <label>Description</label>
+          <textarea name="description" required placeholder="What it does, key ingredients, how to use it..."><%= product ? product.description : '' %></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+          <input type="text" name="category" required value="<%= product ? product.category : '' %>" placeholder="e.g. cleansers, serums, spf">
+        </div>
+
+        <div class="form-group">
+          <label>Tag (optional)</label>
+          <input type="text" name="tag" value="<%= product && product.tag ? product.tag : '' %>" placeholder="e.g. Best seller, New">
+        </div>
+
+        <div class="form-group">
+          <label>Price (USD)</label>
+          <input type="number" step="0.01" min="0" name="price" required value="<%= product ? product.price : '' %>">
+        </div>
+
+        <div class="form-group">
+          <label>Stock quantity</label>
+          <input type="number" min="0" name="stock" required value="<%= product ? product.stock : '' %>">
+        </div>
+
+        <div class="form-group full checkbox-row" style="margin-top:-6px;">
+          <input type="checkbox" name="onSale" id="onSaleCheck" <%= product && product.onSale ? 'checked' : '' %>>
+          <label for="onSaleCheck" style="margin:0;">This product is on sale (shows a "Sale" badge)</label>
+        </div>
+
+        <div class="form-group">
+          <label>Compare-at price (optional)</label>
+          <input type="number" step="0.01" min="0" name="compareAtPrice" value="<%= product && product.compareAtPrice ? product.compareAtPrice : '' %>" placeholder="Original price, shown crossed out">
+        </div>
+
+        <div class="form-group">
+          <label>Star rating (0–5)</label>
+          <input type="number" step="0.1" min="0" max="5" name="rating" value="<%= product ? product.rating : '4.8' %>">
+        </div>
+
+        <div class="form-group">
+          <label>Review count</label>
+          <input type="number" min="0" name="reviewCount" value="<%= product ? product.reviewCount : '0' %>" placeholder="0 hides the review count">
+        </div>
+
+        <div class="form-group full">
+          <label>Main product image</label>
+          <div class="image-upload-row">
+            <div class="image-preview" id="imagePreview" style="background:<%= product ? product.accentColor : '#F2A6C6' %>;">
+              <% if (product && product.image) { %>
+                <img src="<%= product.image %>" id="previewImg">
+              <% } else { %>
+                <span class="ph" id="previewPh"><%= product ? product.name.charAt(0) : '?' %></span>
+                <img src="" id="previewImg" style="display:none;">
+              <% } %>
+            </div>
+            <label class="file-input-label">
+              📷 Upload image
+              <input type="file" name="image" accept="image/*" style="display:none;" id="imageInput">
+            </label>
+          </div>
+          <p style="font-size:12px; color:var(--plum-soft); margin-top:8px;">If no image is uploaded, a colored placeholder is shown using the accent color below.</p>
+        </div>
+
+        <div class="form-group full">
+          <label>Secondary image (optional — shown on hover in product grids)</label>
+          <div class="image-upload-row">
+            <div class="image-preview" id="imagePreview2">
+              <% if (product && product.image2) { %>
+                <img src="<%= product.image2 %>" id="previewImg2">
+              <% } else { %>
+                <span class="ph" id="previewPh2" style="color:var(--plum-soft);">—</span>
+                <img src="" id="previewImg2" style="display:none;">
+              <% } %>
+            </div>
+            <label class="file-input-label">
+              📷 Upload hover image
+              <input type="file" name="image2" accept="image/*" style="display:none;" id="imageInput2">
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group full">
+          <label>Placeholder accent color</label>
+          <input type="hidden" name="accentColor" id="accentColorInput" value="<%= product ? product.accentColor : '#F2A6C6' %>">
+          <div class="color-swatch-row" id="swatchRow">
+            <% ['#F2A6C6','#DF6B9C','#F7C1D6','#FBD3E1','#EA82AC','#FFD9A8','#5C2340'].forEach(c => { %>
+              <span class="color-swatch <%= (product && product.accentColor === c) || (!product && c === '#F2A6C6') ? 'selected' : '' %>" style="background:<%= c %>;" data-color="<%= c %>"></span>
+            <% }) %>
+          </div>
+        </div>
+
+        <div class="form-group full checkbox-row">
+          <input type="checkbox" name="featured" id="featuredCheck" <%= product && product.featured ? 'checked' : '' %>>
+          <label for="featuredCheck" style="margin:0;">Show on homepage as a featured product</label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary"><%= product ? 'Save changes' : 'Add product' %></button>
+        <a href="/admin/dashboard" class="btn-cancel">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>

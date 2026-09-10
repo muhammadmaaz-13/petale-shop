@@ -1,0 +1,91 @@
+<footer>
+  <div class="container">
+    <div class="footer-newsletter-row">
+      <div>
+        <h4>Sign up and save</h4>
+        <p>Get early access to new drops and a code for 15% off your first order.</p>
+      </div>
+      <form class="newsletter-form-compact" data-newsletter>
+        <input type="email" placeholder="Enter your email" required>
+        <button type="submit" aria-label="Subscribe">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <div class="footer-grid">
+      <div>
+        <div class="logo" style="margin-bottom:14px;"><span class="dot"></span>Petalé</div>
+        <p style="color:var(--plum-soft); font-size:14px; max-width:260px;">Botanical skincare, formulated for skin that changes with the seasons — and the years.</p>
+        <div class="social-row">
+          <a href="#" aria-label="Instagram">◐</a>
+          <a href="#" aria-label="Facebook">◑</a>
+          <a href="#" aria-label="TikTok">◒</a>
+          <a href="#" aria-label="Pinterest">◓</a>
+        </div>
+      </div>
+      <div>
+        <h5>Shop</h5>
+        <ul>
+          <li><a href="/shop">All products</a></li>
+          <% allCategories.forEach(cat => { %>
+            <li><a href="/shop?category=<%= cat %>"><%= cat.charAt(0).toUpperCase() + cat.slice(1) %></a></li>
+          <% }) %>
+        </ul>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <ul><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li></ul>
+      </div>
+      <div>
+        <h5>Support</h5>
+        <ul><li><a href="/contact">Help / FAQ</a></li><li><a href="/admin/login">Manage store</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Petalé Skincare</span>
+      <span>Made with care, everywhere</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ CART DRAWER ============ -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-head">
+    <h3>Your bag</h3>
+    <button class="close-drawer" id="closeDrawer" aria-label="Close cart">✕</button>
+  </div>
+
+  <div class="shipping-progress" id="shippingProgress">
+    <p class="shipping-msg" id="shippingMsg"></p>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="cart-drawer-items" id="drawerItems"></div>
+
+  <div class="cart-drawer-footer" id="drawerFooter">
+    <div class="cart-total-row"><span>Subtotal</span><span class="amt" id="drawerTotal">$0</span></div>
+    <a href="/cart" class="btn-secondary" style="width:100%; justify-content:center; margin-bottom:10px;">View full bag</a>
+    <form action="/checkout" method="POST">
+      <button type="submit" class="checkout-btn">Checkout <span>→</span></button>
+    </form>
+  </div>
+</aside>
+
+<!-- ============ FLOATING CHAT BUBBLE ============ -->
+<a href="<%= siteConfig.chatLink %>" class="chat-bubble" aria-label="Need help? Chat with us">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+  <span class="chat-bubble-label">Need help?</span>
+</a>
+
+<div class="toast" id="toast"></div>
+<script>
+  window.__siteConfig = {
+    freeShippingThreshold: <%- JSON.stringify(siteConfig.freeShippingThreshold) %>
+  };
+</script>
+<script src="/js/main.js"></script>
+<script src="/js/cart.js"></script>
+</body>
+</html>

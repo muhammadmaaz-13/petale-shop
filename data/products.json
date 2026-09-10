@@ -1,0 +1,40 @@
+[
+  {
+    "id": "p_demo1",
+    "name": "Rose Quartz Cleanser",
+    "tag": "Sample product",
+    "category": "cleansers",
+    "price": 28,
+    "compareAtPrice": 34,
+    "onSale": true,
+    "stock": 40,
+    "rating": 4.9,
+    "reviewCount": 128,
+    "description": "This is a placeholder product so you can see how the shop looks. A milky, sulfate-free cleanser with rose water and oat extract for a soft, never-tight finish. Edit or delete this from the admin dashboard once you add your real products.",
+    "image": "https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "image2": "https://images.pexels.com/photos/13608713/pexels-photo-13608713.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "accentColor": "#F2A6C6",
+    "featured": true,
+    "isDemo": true,
+    "createdAt": 1
+  },
+  {
+    "id": "p_demo2",
+    "name": "Hyaluronic Dew Serum",
+    "tag": "Sample product",
+    "category": "serums",
+    "price": 38,
+    "compareAtPrice": null,
+    "onSale": false,
+    "stock": 25,
+    "rating": 4.7,
+    "reviewCount": 96,
+    "description": "This is a placeholder product so you can see how the shop looks. A featherweight serum layering three molecular weights of hyaluronic acid for all-day dew. Edit or delete this from the admin dashboard once you add your real products.",
+    "image": "https://images.pexels.com/photos/24602068/pexels-photo-24602068.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "image2": "https://images.pexels.com/photos/7321723/pexels-photo-7321723.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "accentColor": "#DF6B9C",
+    "featured": true,
+    "isDemo": true,
+    "createdAt": 2
+  }
+]

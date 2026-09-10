@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+<%- include('../partials/admin-nav') %>
+
+<div class="admin-wrap">
+  <div class="admin-header-row">
+    <h1>Products</h1>
+    <a href="/admin/products/new" class="btn-primary">+ Add product</a>
+  </div>
+
+  <% if (saved === 'created') { %><div class="saved-banner">Product added.</div><% } %>
+  <% if (saved === 'updated') { %><div class="saved-banner">Product updated.</div><% } %>
+  <% if (saved === 'deleted') { %><div class="saved-banner">Product deleted.</div><% } %>
+
+  <div class="admin-table-card">
+    <% if (products.length === 0) { %>
+      <div class="admin-empty">
+        <p>No products yet. <a href="/admin/products/new" style="color:var(--rose-deep);">Add your first one</a>.</p>
+      </div>
+    <% } else { %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Featured</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% products.forEach(p => { %>
+            <tr>
+              <td>
+                <div class="admin-name-cell">
+                  <div class="admin-thumb">
+                    <% if (p.image) { %>
+                      <img src="<%= p.image %>" alt="">
+                    <% } else { %>
+                      <div class="ph" style="background:<%= p.accentColor %>;"><%= p.name.charAt(0) %></div>
+                    <% } %>
+                  </div>
+                  <div class="name-text">
+                    <%= p.name %>
+                    <% if (p.isDemo) { %><span class="demo-flag">Sample product</span><% } %>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <%= p.category %>
+                <% if (p.onSale) { %><span class="stock-pill low" style="margin-left:6px;">Sale</span><% } %>
+              </td>
+              <td>
+                $<%= p.price %>
+                <% if (p.onSale && p.compareAtPrice) { %><span style="text-decoration:line-through; color:var(--plum-soft); font-size:12px; margin-left:6px;">$<%= p.compareAtPrice %></span><% } %>
+              </td>
+              <td>
+                <% if (p.stock === 0) { %>
+                  <span class="stock-pill out">Out of stock</span>
+                <% } else if (p.stock < 10) { %>
+                  <span class="stock-pill low"><%= p.stock %> left</span>
+                <% } else { %>
+                  <span class="stock-pill ok"><%= p.stock %> in stock</span>
+                <% } %>
+              </td>
+              <td><%= p.featured ? 'Yes' : '—' %></td>
+              <td>
+                <div class="row-actions">
+                  <a href="/admin/products/<%= p.id %>/edit">Edit</a>
+                  <form action="/admin/products/<%= p.id %>/delete" method="POST" onsubmit="return confirm('Delete this product? This cannot be undone.');">
+                    <button type="submit" class="delete-btn">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+</div>
+</body>
+</html>
