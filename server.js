@@ -39,16 +39,37 @@ app.use((req, res, next) => {
   res.locals.siteConfig = {
     announcements: config.announcements,
     freeShippingThreshold: config.freeShippingThreshold,
-    chatLink: config.chatLink
+    chatLink: config.chatLink,
+    phone: config.phone,
+    contactEmail: config.contactEmail,
+    paymentMethods: config.paymentMethods
   };
+  // Sensible fallback so any page that forgets to set its own <meta description>
+  // still ships with one, rather than a blank/duplicate tag.
+  res.locals.metaDescription = config.defaultMetaDescription;
   next();
 });
 
 app.use('/', publicRoutes);
 app.use('/admin', adminRoutes);
 
+// ---------- 404 ----------
 app.use((req, res) => {
-  res.status(404).render('404', { title: 'Page not found' });
+  res.status(404).render('404', {
+    title: 'Page not found — Petalé',
+    metaDescription: "The page you're looking for doesn't exist or may have moved."
+  });
+});
+
+// ---------- 500 / unexpected errors ----------
+// Any error thrown or passed to next(err) in a route ends up here instead of
+// crashing the process or leaking a raw stack trace to the visitor.
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).render('500', {
+    title: 'Something went wrong — Petalé',
+    metaDescription: 'An unexpected error occurred.'
+  });
 });
 
 // Local / traditional Node hosts listen; Vercel imports the app as a serverless handler.

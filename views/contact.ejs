@@ -17,26 +17,36 @@
       <p style="color:var(--plum-soft);">Thanks for reaching out — we'll get back to you soon. (Note: this is a demo form, no email is actually sent yet.)</p>
     </div>
   <% } else { %>
+    <% if (errors) { %>
+      <div class="form-alert" role="alert" style="max-width:560px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>Please fix the highlighted fields below.</span>
+      </div>
+    <% } %>
     <div class="contact-grid">
-      <form class="contact-form reveal" action="/contact" method="POST">
+      <form class="contact-form reveal" action="/contact" method="POST" novalidate>
         <div class="form-group">
-          <label>Name</label>
-          <input type="text" name="name" required>
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" value="<%= values && values.name || '' %>" class="<%= errors && errors.name ? 'input-error' : '' %>" aria-invalid="<%= errors && errors.name ? 'true' : 'false' %>" required>
+          <% if (errors && errors.name) { %><p class="field-error"><%= errors.name %></p><% } %>
         </div>
         <div class="form-group">
-          <label>Email</label>
-          <input type="email" name="email" required>
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" value="<%= values && values.email || '' %>" class="<%= errors && errors.email ? 'input-error' : '' %>" aria-invalid="<%= errors && errors.email ? 'true' : 'false' %>" required>
+          <% if (errors && errors.email) { %><p class="field-error"><%= errors.email %></p><% } %>
         </div>
         <div class="form-group">
-          <label>Message</label>
-          <textarea name="message" required></textarea>
+          <label for="message">Message</label>
+          <textarea id="message" name="message" class="<%= errors && errors.message ? 'input-error' : '' %>" aria-invalid="<%= errors && errors.message ? 'true' : 'false' %>" required><%= values && values.message || '' %></textarea>
+          <% if (errors && errors.message) { %><p class="field-error"><%= errors.message %></p><% } %>
         </div>
         <button type="submit" class="btn-primary" style="align-self:flex-start;">Send message</button>
       </form>
       <div class="contact-info-card reveal">
         <h3>Other ways to reach us</h3>
-        <p>Prefer email or social? We're around.</p>
-        <div class="info-row">✉️ hello@petale.example</div>
+        <p>Prefer email or a call? We're around.</p>
+        <div class="info-row">✉️ <a href="mailto:<%= siteConfig.contactEmail %>" style="color:inherit;"><%= siteConfig.contactEmail %></a></div>
+        <div class="info-row">📞 <a href="tel:<%= siteConfig.phone.tel %>" style="color:inherit;"><%= siteConfig.phone.display %></a></div>
         <div class="info-row">📍 Studio hours: Mon–Fri, 9am–5pm</div>
         <div class="info-row">💬 Usually reply within 1 business day</div>
       </div>

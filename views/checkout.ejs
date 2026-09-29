@@ -1,0 +1,79 @@
+<%- include('partials/header') %>
+
+<section class="container cart-page">
+  <div class="section-head reveal" style="margin-bottom:34px;">
+    <h2>Checkout</h2>
+  </div>
+
+  <% if (errors) { %>
+    <div class="form-alert" role="alert">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>Please fix the highlighted fields below before placing your order.</span>
+    </div>
+  <% } %>
+
+  <div class="cart-layout">
+    <form class="checkout-form" action="/checkout" method="POST" novalidate>
+      <h3 style="margin-bottom:18px;">Delivery details</h3>
+
+      <div class="form-group">
+        <label for="fullName">Full name</label>
+        <input type="text" id="fullName" name="fullName" value="<%= values.fullName || '' %>" class="<%= errors && errors.fullName ? 'input-error' : '' %>" aria-invalid="<%= errors && errors.fullName ? 'true' : 'false' %>" required>
+        <% if (errors && errors.fullName) { %><p class="field-error"><%= errors.fullName %></p><% } %>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone number</label>
+        <input type="tel" id="phone" name="phone" value="<%= values.phone || '' %>" class="<%= errors && errors.phone ? 'input-error' : '' %>" aria-invalid="<%= errors && errors.phone ? 'true' : 'false' %>" placeholder="e.g. +1 555 123 4567" required>
+        <% if (errors && errors.phone) { %><p class="field-error"><%= errors.phone %></p><% } %>
+        <p class="field-hint">Our courier will call this number to confirm delivery.</p>
+      </div>
+
+      <div class="form-group">
+        <label for="address">Delivery address</label>
+        <input type="text" id="address" name="address" value="<%= values.address || '' %>" class="<%= errors && errors.address ? 'input-error' : '' %>" aria-invalid="<%= errors && errors.address ? 'true' : 'false' %>" required>
+        <% if (errors && errors.address) { %><p class="field-error"><%= errors.address %></p><% } %>
+      </div>
+
+      <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" value="<%= values.city || '' %>" class="<%= errors && errors.city ? 'input-error' : '' %>" aria-invalid="<%= errors && errors.city ? 'true' : 'false' %>" required>
+        <% if (errors && errors.city) { %><p class="field-error"><%= errors.city %></p><% } %>
+      </div>
+
+      <h3 style="margin:28px 0 14px;">Payment method</h3>
+      <div class="payment-options">
+        <% Object.keys(paymentMethods).forEach(key => { %>
+          <% const method = paymentMethods[key]; %>
+          <label class="payment-option <%= !method.enabled ? 'disabled' : '' %>">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="<%= key %>"
+              <%= method.enabled ? '' : 'disabled' %>
+              <%= (method.enabled && (values.paymentMethod === key || (!values.paymentMethod && key === 'cod'))) ? 'checked' : '' %>
+            >
+            <span class="payment-option-label"><%= method.label %></span>
+            <% if (!method.enabled) { %><span class="badge-unavailable">Not available yet</span><% } %>
+          </label>
+        <% }) %>
+      </div>
+      <% if (errors && errors.paymentMethod) { %><p class="field-error"><%= errors.paymentMethod %></p><% } %>
+      <p class="field-hint" style="margin-top:6px;">Only Cash on Delivery is supported right now. Card and PayPal are coming soon.</p>
+
+      <button type="submit" class="checkout-btn" style="margin-top:26px;">Place order (Cash on Delivery) <span>→</span></button>
+    </form>
+
+    <div class="summary-card">
+      <h3>Order summary</h3>
+      <% items.forEach(item => { %>
+        <div class="summary-row"><span><%= item.product.name %> × <%= item.qty %></span><span>$<%= item.lineTotal %></span></div>
+      <% }) %>
+      <div class="summary-row"><span>Shipping</span><span>Free</span></div>
+      <div class="summary-row total"><span>Total</span><span>$<%= total %></span></div>
+      <p class="field-hint" style="margin-top:14px;">You'll pay <strong>$<%= total %></strong> in cash when your order arrives.</p>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

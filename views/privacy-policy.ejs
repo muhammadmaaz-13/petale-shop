@@ -1,0 +1,48 @@
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="page-hero-blob"></div>
+  <div class="container page-hero-inner">
+    <div class="eyebrow-tag">Legal</div>
+    <h1>Privacy <em>Policy</em></h1>
+    <p class="lede">Last updated: <%= new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+  </div>
+</section>
+
+<section class="legal-body container">
+  <p>Petalé ("we", "us", "our") respects your privacy. This policy explains what information we collect when you use this website, how we use it, and the choices you have.</p>
+
+  <h3>Information we collect</h3>
+  <ul>
+    <li><strong>Order &amp; delivery details</strong> — name, phone number, and delivery address you provide at checkout, so we can fulfil your Cash on Delivery order.</li>
+    <li><strong>Contact form submissions</strong> — name, email address, and message content when you contact us.</li>
+    <li><strong>Cookies &amp; session data</strong> — a session cookie is used to remember what's in your shopping bag while you browse. See the Cookies section below.</li>
+    <li><strong>Basic usage data</strong> — standard technical information (such as pages visited and browser type) that helps us keep the site working correctly.</li>
+  </ul>
+
+  <h3>How we use your information</h3>
+  <ul>
+    <li>To process and deliver your Cash on Delivery orders.</li>
+    <li>To respond to messages sent through our contact form.</li>
+    <li>To keep your shopping bag working as you browse the site.</li>
+    <li>To improve the site and troubleshoot issues.</li>
+  </ul>
+  <p>We do not sell your personal information to third parties.</p>
+
+  <h3>Cookies</h3>
+  <p>We use a small number of cookies: essential cookies (to remember your cart and keep the site functioning) and, where you consent via the cookie banner, cookies that help us understand how the site is used. You can decline non-essential cookies at any time from the banner shown on your first visit, or by clearing your browser's cookies for this site.</p>
+
+  <h3>How we store and protect your information</h3>
+  <p>Order and contact details are stored only as long as needed to fulfil your order or respond to your enquiry. We take reasonable technical measures to protect your information, but no online system is 100% secure.</p>
+
+  <h3>Your choices</h3>
+  <p>You can ask us to review, correct, or delete the personal information we hold about you at any time by reaching out through our <a href="/contact" style="color:var(--rose-deep);">contact page</a> or by phone at <a href="tel:<%= siteConfig.phone.tel %>" style="color:var(--rose-deep);"><%= siteConfig.phone.display %></a>.</p>
+
+  <h3>Changes to this policy</h3>
+  <p>We may update this policy from time to time. Changes will be posted on this page with an updated date.</p>
+
+  <h3>Contact us</h3>
+  <p>Questions about this policy? Email us at <a href="mailto:<%= siteConfig.contactEmail %>" style="color:var(--rose-deep);"><%= siteConfig.contactEmail %></a> or call <a href="tel:<%= siteConfig.phone.tel %>" style="color:var(--rose-deep);"><%= siteConfig.phone.display %></a>.</p>
+</section>
+
+<%- include('partials/footer') %>

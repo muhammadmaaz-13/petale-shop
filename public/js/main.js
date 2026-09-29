@@ -163,6 +163,68 @@ document.querySelectorAll('#newsletterForm, [data-newsletter]').forEach(form => 
   window.__renderCartDrawer = renderDrawer;
 })();
 
+// ---------- MOBILE HAMBURGER MENU ----------
+(function () {
+  const toggle = document.getElementById('menuToggle');
+  const menu = document.getElementById('mobileMenu');
+  const overlay = document.getElementById('mobileMenuOverlay');
+  const closeBtn = document.getElementById('mobileMenuClose');
+  if (!toggle || !menu || !overlay) return;
+
+  function openMenu() {
+    menu.classList.add('show');
+    overlay.classList.add('show');
+    menu.setAttribute('aria-hidden', 'false');
+    toggle.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('mobile-menu-open');
+  }
+  function closeMenu() {
+    menu.classList.remove('show');
+    overlay.classList.remove('show');
+    menu.setAttribute('aria-hidden', 'true');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('mobile-menu-open');
+  }
+
+  toggle.addEventListener('click', () => {
+    if (menu.classList.contains('show')) closeMenu(); else openMenu();
+  });
+  if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+  overlay.addEventListener('click', closeMenu);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+  // Close the mobile menu automatically if the viewport is resized back to desktop
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) closeMenu();
+  });
+  // Close when a link inside the menu is tapped
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+})();
+
+// ---------- COOKIE BANNER ----------
+(function () {
+  const banner = document.getElementById('cookieBanner');
+  if (!banner) return;
+  const STORAGE_KEY = 'petale_cookie_consent';
+
+  let stored = null;
+  try { stored = localStorage.getItem(STORAGE_KEY); } catch (err) { /* storage unavailable, e.g. private mode */ }
+
+  if (!stored) {
+    // Small delay so it doesn't compete with the page's own reveal animations
+    setTimeout(() => banner.classList.add('show'), 600);
+  }
+
+  function dismiss(value) {
+    banner.classList.remove('show');
+    try { localStorage.setItem(STORAGE_KEY, value); } catch (err) { /* ignore if storage unavailable */ }
+  }
+
+  const acceptBtn = document.getElementById('cookieAccept');
+  const declineBtn = document.getElementById('cookieDecline');
+  if (acceptBtn) acceptBtn.addEventListener('click', () => dismiss('accepted'));
+  if (declineBtn) declineBtn.addEventListener('click', () => dismiss('declined'));
+})();
+
 // ---------- TOAST ----------
 function showToast(msg) {
   const t = document.getElementById('toast');

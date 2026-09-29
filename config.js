@@ -10,6 +10,10 @@ module.exports = {
   sessionSecret: process.env.SESSION_SECRET || 'petale-secret-change-me',
   port: process.env.PORT || 3000,
 
+  // Public site URL — used to build robots.txt / sitemap.xml / canonical links.
+  // Change this to your real domain before going live.
+  siteUrl: process.env.SITE_URL || 'https://petale-shop.vercel.app',
+
   // Rotating messages in the top announcement bar
   announcements: [
     '✨ 20% off your first order — code GLOW20',
@@ -22,5 +26,25 @@ module.exports = {
 
   // Floating "chat with us" bubble — point this at whatever you actually use
   // (WhatsApp link, Instagram DM, mailto:, or leave it pointing at /contact)
-  chatLink: '/contact'
+  chatLink: '/contact',
+
+  // Click-to-call phone number. Displayed formatted, dialed via the "tel" value.
+  phone: {
+    display: '+1 (555) 123-4567',
+    tel: '+15551234567'
+  },
+
+  contactEmail: 'hello@petale.example',
+
+  // Only Cash on Delivery is live for now. The other methods are shown in the
+  // checkout UI but disabled/marked "Not available yet". Flip these to true
+  // once a payment processor is actually wired up.
+  paymentMethods: {
+    cod: { enabled: true, label: 'Cash on Delivery (COD)' },
+    card: { enabled: false, label: 'Credit / Debit Card' },
+    paypal: { enabled: false, label: 'PayPal' }
+  },
+
+  // Default meta description used when a page doesn't set its own.
+  defaultMetaDescription: 'Petalé — small-batch, cruelty-free botanical skincare. Shop cleansers, serums and moisturizers formulated for skin that changes with the seasons.'
 };

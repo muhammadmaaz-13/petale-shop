@@ -3,8 +3,14 @@
 <section class="container cart-page">
   <div class="success-box reveal" style="max-width:520px; margin:0 auto;">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-    <h2 style="margin-bottom:14px;">Order received</h2>
-    <p style="color:var(--plum-soft); margin-bottom:26px;">This is a demo store, so no payment was actually taken — but this is exactly where your customers would land after checking out.</p>
+    <h2 style="margin-bottom:14px;">Thank you<% if (typeof fullName !== 'undefined' && fullName) { %>, <%= fullName %><% } %>! Your order is on its way.</h2>
+    <% if (typeof orderId !== 'undefined' && orderId) { %>
+      <p style="font-size:14px; color:var(--plum-soft); margin-bottom:6px;">Order reference: <strong style="color:var(--plum);"><%= orderId %></strong></p>
+    <% } %>
+    <% if (typeof total !== 'undefined' && total) { %>
+      <p style="font-size:14px; color:var(--plum-soft); margin-bottom:18px;">Amount due on delivery: <strong style="color:var(--plum);">$<%= total %></strong></p>
+    <% } %>
+    <p style="color:var(--plum-soft); margin-bottom:26px;">You've chosen <strong>Cash on Delivery</strong> — please have the exact amount ready for our courier. We'll call the phone number you provided to confirm delivery details. (This is a demo store, so no real courier has actually been dispatched.)</p>
     <a href="/shop" class="btn-primary">Continue shopping</a>
   </div>
 </section>

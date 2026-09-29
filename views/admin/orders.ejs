@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+<%- include('../partials/admin-nav') %>
+
+<div class="admin-wrap">
+  <div class="admin-header-row">
+    <h1>Orders</h1>
+  </div>
+
+  <% if (updated) { %><div class="saved-banner">Order status updated.</div><% } %>
+
+  <div class="status-tabs">
+    <a href="/admin/orders" class="<%= statusFilter === 'all' ? 'active' : '' %>">All <span>(<%= orderCounts.total %>)</span></a>
+    <a href="/admin/orders?status=pending" class="<%= statusFilter === 'pending' ? 'active' : '' %>">Pending <span>(<%= orderCounts.pending %>)</span></a>
+    <a href="/admin/orders?status=fulfilled" class="<%= statusFilter === 'fulfilled' ? 'active' : '' %>">Delivered <span>(<%= orderCounts.fulfilled %>)</span></a>
+    <a href="/admin/orders?status=cancelled" class="<%= statusFilter === 'cancelled' ? 'active' : '' %>">Cancelled <span>(<%= orderCounts.cancelled %>)</span></a>
+  </div>
+
+  <div class="admin-table-card">
+    <% if (orders.length === 0) { %>
+      <div class="admin-empty">
+        <p>No orders <%= statusFilter !== 'all' ? 'with this status ' : '' %>yet. New Cash on Delivery orders placed at checkout will show up here automatically.</p>
+      </div>
+    <% } else { %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Delivery address</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% orders.forEach(o => { %>
+            <tr>
+              <td><%= o.id %><br><span style="font-size:12px; color:var(--plum-soft);"><%= new Date(o.createdAt).toLocaleString() %></span></td>
+              <td>
+                <%= o.customer.fullName %><br>
+                <a href="tel:<%= o.customer.phone %>" style="font-size:12px; color:var(--rose-deep);"><%= o.customer.phone %></a>
+              </td>
+              <td style="max-width:220px; font-size:13px; color:var(--plum-soft);"><%= o.customer.address %>, <%= o.customer.city %></td>
+              <td style="font-size:13px; color:var(--plum-soft);"><%= o.items.reduce((s,i)=>s+i.qty,0) %> item<%= o.items.reduce((s,i)=>s+i.qty,0) === 1 ? '' : 's' %></td>
+              <td>$<%= o.total %></td>
+              <td><span class="status-pill status-<%= o.status %>"><%= o.status %></span></td>
+              <td><a href="/admin/orders/<%= o.id %>">View</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+</div>
+</body>
+</html>

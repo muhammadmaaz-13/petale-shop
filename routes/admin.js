@@ -39,10 +39,8 @@ function requireAdmin(req, res, next) {
   return res.redirect('/admin/login');
 }
 
-function uploadedPublicPath(filename) {
-  // On Vercel, /tmp files are not publicly served; store a data URL path only for local.
-  // Local uploads live under /public/uploads and are served by Express/static hosting.
-  return '/uploads/' + filename;
+function imagePath(filename) {
+  return isServerless ? '/admin/uploads/' + filename : '/uploads/' + filename;
 }
 
 // Serve serverless uploads from /tmp when requested
@@ -77,11 +75,49 @@ router.get('/logout', (req, res) => {
 // ---------- DASHBOARD ----------
 router.get('/dashboard', requireAdmin, (req, res) => {
   const products = db.getAllProducts();
+  const orders = db.getAllOrders().slice(0, 5);
+  const orderCounts = db.getOrderCounts();
   res.render('admin/dashboard', {
     title: 'Dashboard — Petalé admin',
     products,
+    orders,
+    orderCounts,
     saved: req.query.saved || null
   });
+});
+
+// ---------- ORDERS ----------
+router.get('/orders', requireAdmin, (req, res) => {
+  const statusFilter = req.query.status || 'all';
+  let orders = db.getAllOrders();
+  if (statusFilter !== 'all') {
+    orders = orders.filter(o => o.status === statusFilter);
+  }
+  res.render('admin/orders', {
+    title: 'Orders — Petalé admin',
+    orders,
+    orderCounts: db.getOrderCounts(),
+    statusFilter,
+    updated: req.query.updated || null
+  });
+});
+
+router.get('/orders/:id', requireAdmin, (req, res) => {
+  const order = db.getOrderById(req.params.id);
+  if (!order) return res.redirect('/admin/orders');
+  res.render('admin/order-detail', {
+    title: order.id + ' — Petalé admin',
+    order
+  });
+});
+
+router.post('/orders/:id/status', requireAdmin, (req, res) => {
+  const { status } = req.body;
+  if (!['pending', 'fulfilled', 'cancelled'].includes(status)) {
+    return res.redirect('/admin/orders/' + req.params.id);
+  }
+  db.updateOrderStatus(req.params.id, status);
+  res.redirect('/admin/orders/' + req.params.id + '?updated=1');
 });
 
 // ---------- NEW PRODUCT ----------
@@ -97,16 +133,8 @@ const uploadFields = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'ima
 
 router.post('/products/new', requireAdmin, uploadFields, (req, res) => {
   const data = { ...req.body, featured: req.body.featured === 'on', onSale: req.body.onSale === 'on' };
-  if (req.files && req.files.image) {
-    data.image = isServerless
-      ? '/admin/uploads/' + req.files.image[0].filename
-      : uploadedPublicPath(req.files.image[0].filename);
-  }
-  if (req.files && req.files.image2) {
-    data.image2 = isServerless
-      ? '/admin/uploads/' + req.files.image2[0].filename
-      : uploadedPublicPath(req.files.image2[0].filename);
-  }
+  if (req.files && req.files.image) data.image = imagePath(req.files.image[0].filename);
+  if (req.files && req.files.image2) data.image2 = imagePath(req.files.image2[0].filename);
   db.createProduct(data);
   res.redirect('/admin/dashboard?saved=created');
 });
@@ -124,16 +152,8 @@ router.get('/products/:id/edit', requireAdmin, (req, res) => {
 
 router.post('/products/:id/edit', requireAdmin, uploadFields, (req, res) => {
   const data = { ...req.body, featured: req.body.featured === 'on', onSale: req.body.onSale === 'on' };
-  if (req.files && req.files.image) {
-    data.image = isServerless
-      ? '/admin/uploads/' + req.files.image[0].filename
-      : uploadedPublicPath(req.files.image[0].filename);
-  }
-  if (req.files && req.files.image2) {
-    data.image2 = isServerless
-      ? '/admin/uploads/' + req.files.image2[0].filename
-      : uploadedPublicPath(req.files.image2[0].filename);
-  }
+  if (req.files && req.files.image) data.image = imagePath(req.files.image[0].filename);
+  if (req.files && req.files.image2) data.image2 = imagePath(req.files.image2[0].filename);
   db.updateProduct(req.params.id, data);
   res.redirect('/admin/dashboard?saved=updated');
 });

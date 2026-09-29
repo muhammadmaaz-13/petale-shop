@@ -39,12 +39,17 @@
       </div>
       <div>
         <h5>Support</h5>
-        <ul><li><a href="/contact">Help / FAQ</a></li><li><a href="/admin/login">Manage store</a></li></ul>
+        <ul>
+          <li><a href="/contact">Help / FAQ</a></li>
+          <li><a href="tel:<%= siteConfig.phone.tel %>" class="footer-phone-link"><%= siteConfig.phone.display %></a></li>
+          <li><a href="/privacy-policy">Privacy policy</a></li>
+          <li><a href="/terms">Terms &amp; conditions</a></li>
+        </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© 2026 Petalé Skincare</span>
-      <span>Made with care, everywhere</span>
+      <span class="footer-bottom-links"><a href="/privacy-policy">Privacy</a> · <a href="/terms">Terms</a> · <a href="tel:<%= siteConfig.phone.tel %>"><%= siteConfig.phone.display %></a> · <a href="/admin/login" class="admin-entry-link"><%= isAdmin ? 'Store admin' : 'Store login' %></a></span>
     </div>
   </div>
 </footer>
@@ -67,9 +72,7 @@
   <div class="cart-drawer-footer" id="drawerFooter">
     <div class="cart-total-row"><span>Subtotal</span><span class="amt" id="drawerTotal">$0</span></div>
     <a href="/cart" class="btn-secondary" style="width:100%; justify-content:center; margin-bottom:10px;">View full bag</a>
-    <form action="/checkout" method="POST">
-      <button type="submit" class="checkout-btn">Checkout <span>→</span></button>
-    </form>
+    <a href="/checkout" class="checkout-btn" style="width:100%;">Checkout <span>→</span></a>
   </div>
 </aside>
 
@@ -80,6 +83,9 @@
 </a>
 
 <div class="toast" id="toast"></div>
+
+<%- include('cookie-banner') %>
+
 <script>
   window.__siteConfig = {
     freeShippingThreshold: <%- JSON.stringify(siteConfig.freeShippingThreshold) %>

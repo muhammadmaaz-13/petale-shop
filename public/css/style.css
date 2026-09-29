@@ -464,3 +464,114 @@ footer{padding:70px 0 34px;border-top:1px solid var(--line);margin-top:40px;}
   .cart-layout{grid-template-columns:1fr;}
   .summary-card{position:static;}
 }
+
+/* ---------- CLICK-TO-CALL PHONE LINK ---------- */
+.phone-link{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:100px;background:var(--blush-soft);color:var(--plum);font-size:13.5px;transition:background 0.3s, transform 0.3s var(--ease);white-space:nowrap;}
+.phone-link:hover{background:var(--blush);transform:translateY(-2px);}
+.phone-link svg{width:15px;height:15px;flex-shrink:0;}
+.footer-phone-link,.footer-bottom-links a{white-space:nowrap;}
+.admin-entry-link{opacity:0.6;}
+.admin-entry-link:hover{opacity:1;}
+@media (max-width:1080px){
+  .phone-link-label{display:none;}
+  .phone-link{padding:0;width:42px;height:42px;justify-content:center;background:var(--blush-soft);}
+}
+@media (max-width:900px){
+  .phone-link{display:none;}
+}
+
+/* ---------- MOBILE HAMBURGER MENU ---------- */
+.menu-toggle{display:none;}
+@media (max-width:900px){
+  .menu-toggle{display:flex;}
+}
+.mobile-menu-overlay{
+  position:fixed;inset:0;background:rgba(92,35,64,0.35);backdrop-filter:blur(2px);
+  opacity:0;visibility:hidden;transition:opacity 0.4s var(--ease), visibility 0.4s;z-index:170;
+}
+.mobile-menu-overlay.show{opacity:1;visibility:visible;}
+.mobile-menu{
+  position:fixed;top:0;left:0;bottom:0;width:320px;max-width:86vw;background:white;z-index:171;
+  transform:translateX(-100%);transition:transform 0.5s var(--ease);
+  display:flex;flex-direction:column;box-shadow:30px 0 60px rgba(92,35,64,0.15);
+  padding:0 0 28px;
+}
+.mobile-menu.show{transform:translateX(0);}
+.mobile-menu-head{display:flex;align-items:center;justify-content:space-between;padding:24px 24px 18px;border-bottom:1px solid var(--line);}
+.mobile-nav-links{padding:14px 12px;flex-grow:1;overflow-y:auto;}
+.mobile-nav-links li a{display:block;padding:13px 12px;border-radius:12px;font-size:16px;color:var(--plum-soft);transition:background 0.2s, color 0.2s;}
+.mobile-nav-links li a.active,.mobile-nav-links li a:hover{background:var(--blush-soft);color:var(--plum);}
+.mobile-nav-links li a.mobile-sub-link{font-size:14.5px;padding-left:26px;color:var(--plum-soft);}
+.mobile-menu-phone{display:flex;align-items:center;gap:10px;margin:6px 24px 0;padding:14px 18px;border-radius:100px;background:var(--plum);color:white;font-size:14px;justify-content:center;}
+.mobile-menu-phone svg{width:16px;height:16px;}
+body.mobile-menu-open{overflow:hidden;}
+
+/* ---------- COOKIE BANNER ---------- */
+.cookie-banner{
+  position:fixed;left:0;right:0;bottom:0;z-index:250;
+  background:var(--plum);color:white;
+  transform:translateY(100%);transition:transform 0.5s var(--ease);
+  box-shadow:0 -12px 30px rgba(92,35,64,0.25);
+}
+.cookie-banner.show{transform:translateY(0);}
+.cookie-banner-inner{max-width:1180px;margin:0 auto;padding:22px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+.cookie-banner-inner p{font-size:13.5px;color:rgba(255,255,255,0.85);max-width:640px;}
+.cookie-banner-inner a{color:white;text-decoration:underline;}
+.cookie-banner-actions{display:flex;gap:12px;flex-shrink:0;}
+.cookie-banner .btn-primary{background:white;color:var(--plum);padding:11px 22px;font-size:13.5px;}
+.cookie-banner .btn-secondary{background:transparent;border-color:rgba(255,255,255,0.4);color:white;padding:11px 22px;font-size:13.5px;}
+@media (max-width:640px){
+  .cookie-banner-inner{padding:18px 20px;}
+  .cookie-banner-actions{width:100%;}
+  .cookie-banner-actions button{flex:1;justify-content:center;}
+}
+
+/* ---------- FORM ERRORS / ALERTS ---------- */
+.form-alert{display:flex;align-items:center;gap:10px;background:#FDECEC;color:#B3261E;border:1px solid rgba(179,38,30,0.25);padding:14px 18px;border-radius:14px;font-size:13.5px;margin-bottom:24px;}
+.form-alert svg{width:18px;height:18px;flex-shrink:0;}
+.field-error{color:#B3261E;font-size:12.5px;margin-top:6px;}
+.field-hint{color:var(--plum-soft);font-size:12.5px;margin-top:6px;}
+.form-group input.input-error,.form-group textarea.input-error{border-color:#B3261E;background:#FFF6F6;}
+
+/* ---------- CHECKOUT PAGE ---------- */
+.checkout-form{background:var(--cream);border-radius:24px;padding:36px;display:flex;flex-direction:column;gap:0;}
+.checkout-form .form-group{margin-bottom:18px;}
+.payment-options{display:flex;flex-direction:column;gap:10px;}
+.payment-option{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:14px;border:1px solid var(--line);background:white;font-size:14.5px;cursor:pointer;transition:border-color 0.3s;}
+.payment-option:has(input:checked){border-color:var(--rose-deep);background:var(--blush-soft);}
+.payment-option input[type="radio"]{width:17px;height:17px;accent-color:var(--rose-deep);flex-shrink:0;}
+.payment-option.disabled{opacity:0.55;cursor:not-allowed;background:var(--cream);}
+.payment-option-label{flex-grow:1;}
+.badge-unavailable{font-size:11px;background:var(--line);color:var(--plum-soft);padding:4px 10px;border-radius:100px;white-space:nowrap;}
+
+/* ---------- LEGAL PAGES (privacy / terms) ---------- */
+.legal-body{max-width:760px;padding:20px 0 100px;}
+.legal-body h3{margin:34px 0 12px;font-size:1.15rem;}
+.legal-body h3:first-child{margin-top:0;}
+.legal-body p{color:var(--plum-soft);font-size:15px;margin-bottom:6px;line-height:1.75;}
+.legal-body ul{margin:10px 0 18px 4px;}
+.legal-body ul li{position:relative;padding-left:20px;color:var(--plum-soft);font-size:15px;margin-bottom:10px;line-height:1.7;}
+.legal-body ul li::before{content:'';position:absolute;left:0;top:10px;width:6px;height:6px;border-radius:50%;background:var(--rose-deep);}
+.legal-body a{color:var(--rose-deep);text-decoration:underline;}
+.policy-highlight{background:var(--blush-soft);border:1px solid var(--rose);border-radius:18px;padding:26px 28px;margin:24px 0;}
+.policy-highlight p{color:var(--plum);}
+
+@media (max-width:900px){
+  .checkout-form{padding:26px 22px;}
+  .legal-body{padding-left:4px;padding-right:4px;}
+}
+
+/* ---------- SMALL PHONES ---------- */
+@media (max-width:480px){
+  .container{padding:0 20px;}
+  nav{padding:16px 20px;}
+  header.scrolled nav{padding:12px 20px;}
+  .page-hero{padding:170px 0 50px;}
+  .cart-page{padding-top:150px;}
+  .cart-line{grid-template-columns:70px 1fr auto;gap:12px;}
+  .cart-line-visual{width:70px;height:70px;}
+  .summary-card,.checkout-form{padding:22px 18px;}
+  .newsletter-form-compact{min-width:0;}
+  .footer-newsletter-row{padding:26px 22px;}
+  .cookie-banner-inner p{max-width:100%;}
+}

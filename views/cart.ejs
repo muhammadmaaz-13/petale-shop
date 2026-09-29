@@ -46,9 +46,7 @@
         <div class="summary-row"><span>Subtotal</span><span>$<%= total %></span></div>
         <div class="summary-row"><span>Shipping</span><span>Calculated at checkout</span></div>
         <div class="summary-row total"><span>Total</span><span>$<%= total %></span></div>
-        <form action="/checkout" method="POST">
-          <button type="submit" class="checkout-btn">Checkout <span>→</span></button>
-        </form>
+        <a href="/checkout" class="checkout-btn">Checkout <span>→</span></a>
       </div>
     </div>
   <% } %>

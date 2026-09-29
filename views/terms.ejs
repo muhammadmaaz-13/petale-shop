@@ -1,0 +1,42 @@
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="page-hero-blob"></div>
+  <div class="container page-hero-inner">
+    <div class="eyebrow-tag">Legal</div>
+    <h1>Terms &amp; <em>Conditions</em></h1>
+    <p class="lede">Last updated: <%= new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+  </div>
+</section>
+
+<section class="legal-body container">
+  <p>By placing an order with Petalé, you agree to the following terms. Please read them carefully before checking out.</p>
+
+  <div class="policy-highlight">
+    <h3 style="margin-bottom:8px;">No-refund policy</h3>
+    <p style="margin-bottom:0;"><strong>All sales are final.</strong> We do not offer refunds, returns, or exchanges for any order, for any reason, once it has been placed and dispatched — including for change of mind, incorrect quantity ordered, or delayed delivery. Please review your order carefully before confirming it at checkout. If your order arrives damaged, incomplete, or is not what you ordered due to a fulfilment error on our part, contact us within 48 hours of delivery at <a href="/contact">our contact page</a> or by phone at <a href="tel:<%= siteConfig.phone.tel %>"><%= siteConfig.phone.display %></a> and we'll review it on a case-by-case basis.</p>
+  </div>
+
+  <h3>Payment</h3>
+  <p>Cash on Delivery (COD) is currently the only available payment method. You agree to have the exact order total ready in cash for our courier at the time of delivery. Card and PayPal payments are shown for reference only and are not yet available for checkout.</p>
+
+  <h3>Order acceptance</h3>
+  <p>Placing an order through this site is an offer to purchase. We reserve the right to refuse or cancel any order, including in cases of suspected fraud, unavailable stock, or an inability to verify delivery details.</p>
+
+  <h3>Delivery</h3>
+  <p>Delivery timeframes are estimates and not guaranteed. We are not responsible for delays caused by circumstances outside our control (such as courier delays, incorrect address details, or weather events).</p>
+
+  <h3>Product information</h3>
+  <p>We do our best to describe our products, ingredients, and pricing accurately. Colors, textures, and packaging may vary slightly from what's shown on the site. Prices are subject to change without notice, but the price shown at the time you place your order is the price you'll pay.</p>
+
+  <h3>Limitation of liability</h3>
+  <p>To the fullest extent permitted by law, Petalé is not liable for any indirect, incidental, or consequential damages arising from the use of our products or this website.</p>
+
+  <h3>Changes to these terms</h3>
+  <p>We may update these terms from time to time. Continued use of the site after changes are posted constitutes acceptance of the revised terms.</p>
+
+  <h3>Contact us</h3>
+  <p>Questions about these terms? Email <a href="mailto:<%= siteConfig.contactEmail %>"><%= siteConfig.contactEmail %></a> or call <a href="tel:<%= siteConfig.phone.tel %>"><%= siteConfig.phone.display %></a>.</p>
+</section>
+
+<%- include('partials/footer') %>

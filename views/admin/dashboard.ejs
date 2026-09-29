@@ -14,6 +14,61 @@
 <%- include('../partials/admin-nav') %>
 
 <div class="admin-wrap">
+  <div class="admin-stats-row">
+    <div class="admin-stat-card">
+      <span class="stat-num"><%= orderCounts.total %></span>
+      <span class="stat-label">Total orders</span>
+    </div>
+    <div class="admin-stat-card <%= orderCounts.pending > 0 ? 'highlight' : '' %>">
+      <span class="stat-num"><%= orderCounts.pending %></span>
+      <span class="stat-label">Pending (needs delivery)</span>
+    </div>
+    <div class="admin-stat-card">
+      <span class="stat-num"><%= orderCounts.fulfilled %></span>
+      <span class="stat-label">Delivered</span>
+    </div>
+    <div class="admin-stat-card">
+      <span class="stat-num"><%= products.length %></span>
+      <span class="stat-label">Products</span>
+    </div>
+  </div>
+
+  <div class="admin-header-row">
+    <h1>Recent orders</h1>
+    <a href="/admin/orders" class="btn-secondary">View all orders</a>
+  </div>
+
+  <div class="admin-table-card" style="margin-bottom:44px;">
+    <% if (orders.length === 0) { %>
+      <div class="admin-empty">
+        <p>No orders yet. New Cash on Delivery orders placed at checkout will show up here.</p>
+      </div>
+    <% } else { %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% orders.forEach(o => { %>
+            <tr>
+              <td><%= o.id %><br><span style="font-size:12px; color:var(--plum-soft);"><%= new Date(o.createdAt).toLocaleString() %></span></td>
+              <td><%= o.customer.fullName %><br><span style="font-size:12px; color:var(--plum-soft);"><%= o.customer.phone %></span></td>
+              <td>$<%= o.total %></td>
+              <td><span class="status-pill status-<%= o.status %>"><%= o.status %></span></td>
+              <td><a href="/admin/orders/<%= o.id %>">View</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+
   <div class="admin-header-row">
     <h1>Products</h1>
     <a href="/admin/products/new" class="btn-primary">+ Add product</a>

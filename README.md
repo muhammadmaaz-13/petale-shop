@@ -4,9 +4,17 @@ A multi-page skincare storefront with a built-in admin dashboard (mini CRM) for 
 
 ## What's inside
 
-- **Multi-page site**: Home, Shop (with category filters + search), Product detail pages, About, Contact, Cart, Checkout confirmation.
+- **Multi-page site**: Home, Shop (with category filters + search), Product detail pages, About, Contact, Cart, Checkout, Privacy Policy, Terms & Conditions, and confirmation ("thank you") page.
 - **Dynamic product data**: products live in `data/products.json` and are rendered on every page.
 - **Admin dashboard** at `/admin/login`: add, edit, and delete products — name, price, sale pricing, star rating, review count, stock, category, and up to two photos (a main image plus an optional "hover" image shown on product cards).
+- **Checkout — Cash on Delivery only.** The checkout page collects delivery details (name, phone, address, city) and a payment method. **Only Cash on Delivery (COD) is selectable** — Credit/Debit Card and PayPal are shown with a "Not available yet" badge and can't be chosen. Flip a method's `enabled` flag in `config.js` → `paymentMethods` the moment you wire up a real processor.
+- **Form validation with real error messages** on the Contact form and Checkout form — both client- and server-side, with field-level messages (not just the browser's default "required" tooltip).
+- **404 and 500 error pages** — friendly, on-brand pages instead of a raw crash or blank screen.
+- **SEO basics**: a unique `<title>` and `<meta name="description">` per page, a dynamic `/robots.txt`, and a dynamic `/sitemap.xml` that automatically includes every product in `data/products.json`.
+- **Cookie consent banner** — shown on first visit, remembers the visitor's Accept/Decline choice (stored locally in their browser), links to the Privacy Policy.
+- **Click-to-call phone number** — in the header, the mobile menu, the footer, and the Contact page. Set it once in `config.js` → `phone`.
+- **Privacy Policy** and **Terms & Conditions** pages — the Terms page includes a clearly highlighted **no-refund / all-sales-final policy**. Written as sensible defaults; have a lawyer review before relying on them for a real business.
+- **Mobile-optimized navigation** — a slide-out hamburger menu under 900px (the old desktop nav simply disappeared on mobile with no way to reach it before), plus tightened spacing/padding for small phones.
 - **Announcement bar**, **"Shop By" mega-menu**, **search overlay**, and a **slide-out cart drawer** with a free-shipping progress bar — the drawer opens automatically whenever something's added to the bag.
 - **Reviews/ratings section** on the homepage with a star breakdown.
 - **Floating "chat with us" bubble** — point `chatLink` in `config.js` at whatever you actually use (WhatsApp, Instagram, email, or just `/contact`).
@@ -31,7 +39,15 @@ Then open:
 Username: admin
 Password: petale2026
 ```
-Change these in `config.js` before you put the site online anywhere public. `config.js` is also where you set the announcement bar messages, free-shipping threshold, and the chat bubble's link.
+Change these in `config.js` before you put the site online anywhere public. `config.js` is also where you set the announcement bar messages, free-shipping threshold, chat bubble link, **phone number**, **contact email**, **site URL** (used in robots.txt/sitemap.xml), and **payment methods**.
+
+## Before you go live — checklist
+
+- [ ] Change the admin username/password and `sessionSecret` in `config.js`.
+- [ ] Set `phone`, `contactEmail`, and `siteUrl` in `config.js` to your real details.
+- [ ] Replace the placeholder text in `views/privacy-policy.ejs` and `views/terms.ejs` with policy your business/lawyer has actually approved — these are starting points, not legal advice.
+- [ ] When you're ready to accept a real payment method beyond Cash on Delivery, set `enabled: true` for it under `paymentMethods` in `config.js`, and wire up an actual processor (Stripe, PayPal, etc.) in `routes/public.js` — right now the checkout route only accepts COD.
+- [ ] Swap the demo products for your real catalog via the admin dashboard.
 
 ## Adding your real products
 
@@ -47,28 +63,34 @@ The two "Sample product" entries (Rose Quartz Cleanser, Hyaluronic Dew Serum) ar
 
 ```
 petale-shop/
-├── server.js              # App entry point
-├── config.js              # Admin username/password, session secret
+├── server.js              # App entry point (also handles 404 / 500 pages)
+├── config.js              # Admin login, session secret, phone, payment methods, site URL
 ├── data/
 │   └── products.json      # Your product database (plain JSON file)
 ├── routes/
-│   ├── public.js           # Home, shop, product, about, contact, cart routes
+│   ├── public.js           # Home, shop, product, about, contact, cart, checkout,
+│   │                        # privacy/terms, robots.txt, sitemap.xml
 │   └── admin.js             # Login + product CRUD routes
 ├── utils/
 │   └── db.js               # Reads/writes data/products.json
 ├── views/                  # EJS page templates
-│   ├── partials/            # Shared header/footer/admin nav
+│   ├── checkout.ejs         # Delivery details + COD-only payment selection
+│   ├── checkout-success.ejs # "Thank you" page shown after a COD order
+│   ├── privacy-policy.ejs
+│   ├── terms.ejs             # Includes the no-refund policy
+│   ├── 404.ejs / 500.ejs
+│   ├── partials/            # Shared header/footer/cookie-banner/admin nav
 │   └── admin/                # Login, dashboard, product form
 └── public/
     ├── css/                 # Site + admin styling
-    ├── js/                  # Animations, cart, admin form behavior
+    ├── js/                  # Animations, cart, mobile menu, cookie banner, admin form behavior
     └── uploads/             # Uploaded product photos land here
 ```
 
 ## Notes & next steps
 
-- **No real payment processing yet.** The checkout button just clears the cart and shows a confirmation page — you'd need to add a processor like Stripe when you're ready to take real orders.
-- **The contact form doesn't send real email yet** — it just shows a confirmation. Wire up something like Nodemailer or a form service (e.g. Formspree) when you're ready.
+- **Only Cash on Delivery is live.** Checkout collects delivery details and confirms a COD order — no money moves online. Card and PayPal are visibly disabled in the UI so customers aren't confused into thinking they can pay online yet.
+- **The contact form doesn't send real email yet** — it just shows a confirmation (after validating the fields). Wire up something like Nodemailer or a form service (e.g. Formspree) when you're ready.
 - **Product data lives in a JSON file**, which is simple and easy to inspect/back up, but if your catalog grows large or you need multiple people editing at once, consider moving to a real database later (e.g. PostgreSQL or MongoDB) — the `utils/db.js` file is the only place that would need to change.
-- **Deploying (Vercel):** push this repo to GitHub and import it in Vercel (or run `npx vercel --prod`). Set `ADMIN_USERNAME`, `ADMIN_PASSWORD`, and `SESSION_SECRET` in the Vercel project env vars before going public. Note: Vercel’s filesystem is ephemeral — admin product/image changes use `/tmp` and reset on cold starts; for lasting catalog changes commit updates to `data/products.json` or move to a real database + cloud storage.
-- **Other hosts:** this also runs anywhere Node.js does — Render, Railway, a VPS, etc. Just make sure `data/` and `public/uploads/` persist between deploys.
+- **Deploying:** this runs anywhere Node.js does — Render, Railway, a VPS, etc. Just make sure `data/` and `public/uploads/` persist between deploys (some hosts wipe the filesystem on redeploy — in that case you'd want cloud storage for images and a real database for products). Also update `siteUrl` in `config.js` to your real domain so `robots.txt`/`sitemap.xml` point search engines to the right place.
+

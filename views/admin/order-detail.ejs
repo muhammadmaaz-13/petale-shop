@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+<%- include('../partials/admin-nav') %>
+
+<div class="admin-wrap" style="max-width:820px;">
+  <a href="/admin/orders" class="back-to-store" style="display:inline-block; margin-bottom:18px;">← All orders</a>
+
+  <div class="admin-header-row">
+    <h1><%= order.id %></h1>
+    <span class="status-pill status-<%= order.status %>" style="font-size:14px;"><%= order.status %></span>
+  </div>
+  <p style="color:var(--plum-soft); margin-bottom:30px; font-size:13.5px;">Placed <%= new Date(order.createdAt).toLocaleString() %> · Paid by <%= order.paymentMethod === 'cod' ? 'Cash on Delivery' : order.paymentMethod %></p>
+
+  <div class="order-detail-grid">
+    <div class="order-card">
+      <h3>Delivery details</h3>
+      <p><strong><%= order.customer.fullName %></strong></p>
+      <p><a href="tel:<%= order.customer.phone %>" style="color:var(--rose-deep);"><%= order.customer.phone %></a></p>
+      <p><%= order.customer.address %></p>
+      <p><%= order.customer.city %></p>
+    </div>
+
+    <div class="order-card">
+      <h3>Update status</h3>
+      <form action="/admin/orders/<%= order.id %>/status" method="POST" class="status-form">
+        <select name="status">
+          <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+          <option value="fulfilled" <%= order.status === 'fulfilled' ? 'selected' : '' %>>Delivered</option>
+          <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+        </select>
+        <button type="submit" class="btn-primary">Save status</button>
+      </form>
+      <p class="field-hint" style="margin-top:10px;">Mark this order "Delivered" once the courier has handed it over and collected the cash payment.</p>
+    </div>
+  </div>
+
+  <h3 style="margin:34px 0 14px;">Items</h3>
+  <div class="admin-table-card">
+    <table class="admin-table">
+      <thead>
+        <tr><th>Product</th><th>Price</th><th>Qty</th><th>Line total</th></tr>
+      </thead>
+      <tbody>
+        <% order.items.forEach(item => { %>
+          <tr>
+            <td><%= item.name %></td>
+            <td>$<%= item.price %></td>
+            <td><%= item.qty %></td>
+            <td>$<%= item.lineTotal %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="3" style="text-align:right; font-weight:600;">Total due on delivery</td><td style="font-weight:600;">$<%= order.total %></td></tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+</body>
+</html>
