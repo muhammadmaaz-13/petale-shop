@@ -6,8 +6,8 @@ A multi-page skincare storefront with a built-in admin dashboard (mini CRM) for 
 
 - **Multi-page site**: Home, Shop (with category filters + search), Product detail pages, About, Contact, Cart, Checkout, Privacy Policy, Terms & Conditions, and confirmation ("thank you") page.
 - **Dynamic product data**: products live in `data/products.json` and are rendered on every page.
-- **Admin dashboard** at `/admin/login`: add, edit, and delete products — name, price, sale pricing, star rating, review count, stock, category, and up to two photos (a main image plus an optional "hover" image shown on product cards).
-- **Checkout — Cash on Delivery only.** The checkout page collects delivery details (name, phone, address, city) and a payment method. **Only Cash on Delivery (COD) is selectable** — Credit/Debit Card and PayPal are shown with a "Not available yet" badge and can't be chosen. Flip a method's `enabled` flag in `config.js` → `paymentMethods` the moment you wire up a real processor.
+- **Admin dashboard** at `/admin/login`: add, edit, and delete products — name, price, sale pricing, star rating, review count, stock, category, and a main photo (an optional secondary photo can be stored but is not currently displayed — product cards keep the same image and just zoom gently on hover).
+- **Checkout — Cash on Delivery only.** The checkout page collects delivery details (name, phone, address, city) and a payment method. **Cash on Delivery (COD) is the only payment method offered.** Other methods can be added later in `config.js` → `paymentMethods` together with the matching handling in `routes/public.js`.
 - **Form validation with real error messages** on the Contact form and Checkout form — both client- and server-side, with field-level messages (not just the browser's default "required" tooltip).
 - **404 and 500 error pages** — friendly, on-brand pages instead of a raw crash or blank screen.
 - **SEO basics**: a unique `<title>` and `<meta name="description">` per page, a dynamic `/robots.txt`, and a dynamic `/sitemap.xml` that automatically includes every product in `data/products.json`.
@@ -46,7 +46,7 @@ Change these in `config.js` before you put the site online anywhere public. `con
 - [ ] Change the admin username/password and `sessionSecret` in `config.js`.
 - [ ] Set `phone`, `contactEmail`, and `siteUrl` in `config.js` to your real details.
 - [ ] Replace the placeholder text in `views/privacy-policy.ejs` and `views/terms.ejs` with policy your business/lawyer has actually approved — these are starting points, not legal advice.
-- [ ] When you're ready to accept a real payment method beyond Cash on Delivery, set `enabled: true` for it under `paymentMethods` in `config.js`, and wire up an actual processor (Stripe, PayPal, etc.) in `routes/public.js` — right now the checkout route only accepts COD.
+- [ ] When you're ready to accept a payment method beyond Cash on Delivery, add it under `paymentMethods` in `config.js` and wire up an actual processor in `routes/public.js` — right now the checkout route only accepts COD.
 - [ ] Swap the demo products for your real catalog via the admin dashboard.
 
 ## Adding your real products
@@ -89,7 +89,7 @@ petale-shop/
 
 ## Notes & next steps
 
-- **Only Cash on Delivery is live.** Checkout collects delivery details and confirms a COD order — no money moves online. Card and PayPal are visibly disabled in the UI so customers aren't confused into thinking they can pay online yet.
+- **Only Cash on Delivery is live.** Checkout collects delivery details and confirms a COD order — no money moves online.
 - **The contact form doesn't send real email yet** — it just shows a confirmation (after validating the fields). Wire up something like Nodemailer or a form service (e.g. Formspree) when you're ready.
 - **Product data lives in a JSON file**, which is simple and easy to inspect/back up, but if your catalog grows large or you need multiple people editing at once, consider moving to a real database later (e.g. PostgreSQL or MongoDB) — the `utils/db.js` file is the only place that would need to change.
 - **Deploying:** this runs anywhere Node.js does — Render, Railway, a VPS, etc. Just make sure `data/` and `public/uploads/` persist between deploys (some hosts wipe the filesystem on redeploy — in that case you'd want cloud storage for images and a real database for products). Also update `siteUrl` in `config.js` to your real domain so `robots.txt`/`sitemap.xml` point search engines to the right place.

@@ -69,10 +69,10 @@
 
   <div class="cart-drawer-items" id="drawerItems"></div>
 
-  <div class="cart-drawer-footer" id="drawerFooter">
+  <div class="cart-drawer-footer" id="drawerFooter" style="display:none;">
     <div class="cart-total-row"><span>Subtotal</span><span class="amt" id="drawerTotal">$0</span></div>
     <a href="/cart" class="btn-secondary" style="width:100%; justify-content:center; margin-bottom:10px;">View full bag</a>
-    <a href="/checkout" class="checkout-btn" style="width:100%;">Checkout <span>→</span></a>
+    <a href="/checkout" class="checkout-btn" id="drawerCheckoutBtn" style="width:100%;">Checkout <span>→</span></a>
   </div>
 </aside>
 
@@ -90,6 +90,7 @@
   window.__siteConfig = {
     freeShippingThreshold: <%- JSON.stringify(siteConfig.freeShippingThreshold) %>
   };
+  window.__cartCount = <%- JSON.stringify(cartCount) %>;
 </script>
 <script src="/js/main.js"></script>
 <script src="/js/cart.js"></script>

@@ -141,7 +141,8 @@ router.get('/cart', (req, res) => {
     title: 'Your bag — Petalé',
     metaDescription: 'Review the items in your Petalé bag before checking out.',
     items,
-    total
+    total,
+    emptyCheckoutAttempt: req.query.empty === '1'
   });
 });
 
@@ -152,45 +153,54 @@ router.get('/cart/data', (req, res) => {
   res.json({ ok: true, items, total, cartCount });
 });
 
+const MAX_QTY_PER_ITEM = 99;
+
+// The cart buttons call these routes with fetch() and get JSON back. If one is
+// ever submitted as a plain form (JavaScript off), send the visitor back to the
+// cart page instead of showing raw JSON.
+function wantsJson(req) {
+  return req.xhr || (req.headers.accept || '').includes('application/json');
+}
+
+function cartResponse(req, res) {
+  const { items, total } = getCartDetails(req.session);
+  const cartCount = items.reduce((s, i) => s + i.qty, 0);
+  if (wantsJson(req)) return res.json({ ok: true, items, total, cartCount });
+  return res.redirect('/cart');
+}
+
 router.post('/cart/add/:id', (req, res) => {
   const product = db.getProductById(req.params.id);
   if (!product) return res.status(404).json({ error: 'Product not found' });
   const qty = Math.max(1, parseInt(req.body && req.body.qty, 10) || 1);
   req.session.cart = req.session.cart || {};
-  req.session.cart[product.id] = (req.session.cart[product.id] || 0) + qty;
-  const { items, total } = getCartDetails(req.session);
-  const cartCount = items.reduce((s, i) => s + i.qty, 0);
-  res.json({ ok: true, items, total, cartCount });
+  req.session.cart[product.id] = Math.min(MAX_QTY_PER_ITEM, (req.session.cart[product.id] || 0) + qty);
+  cartResponse(req, res);
 });
 
 router.post('/cart/update/:id', (req, res) => {
   const delta = parseInt(req.body.delta, 10) || 0;
   req.session.cart = req.session.cart || {};
   const current = req.session.cart[req.params.id] || 0;
-  const next = current + delta;
-  if (next <= 0) {
-    delete req.session.cart[req.params.id];
-  } else {
+  if (current > 0) {
+    // Plus/minus never removes an item: the minimum is 1 (use Remove for that).
+    const next = Math.min(MAX_QTY_PER_ITEM, Math.max(1, current + delta));
     req.session.cart[req.params.id] = next;
   }
-  const { items, total } = getCartDetails(req.session);
-  const cartCount = Object.values(req.session.cart).reduce((s, q) => s + q, 0);
-  res.json({ ok: true, items, total, cartCount });
+  cartResponse(req, res);
 });
 
 router.post('/cart/remove/:id', (req, res) => {
   req.session.cart = req.session.cart || {};
   delete req.session.cart[req.params.id];
-  const { items, total } = getCartDetails(req.session);
-  const cartCount = Object.values(req.session.cart).reduce((s, q) => s + q, 0);
-  res.json({ ok: true, items, total, cartCount });
+  cartResponse(req, res);
 });
 
 // ---------- CHECKOUT ----------
 router.get('/checkout', (req, res) => {
   const { items, total } = getCartDetails(req.session);
   if (items.length === 0) {
-    return res.redirect('/cart');
+    return res.redirect('/cart?empty=1');
   }
   res.render('checkout', {
     title: 'Checkout — Petalé',
@@ -206,17 +216,26 @@ router.get('/checkout', (req, res) => {
 router.post('/checkout', (req, res) => {
   const { items, total } = getCartDetails(req.session);
   if (items.length === 0) {
-    return res.redirect('/cart');
+    return res.redirect('/cart?empty=1');
   }
 
   const fullName = (req.body.fullName || '').trim();
+  const email = (req.body.email || '').trim();
   const phone = (req.body.phone || '').trim();
   const address = (req.body.address || '').trim();
   const city = (req.body.city || '').trim();
+  const province = (req.body.province || '').trim();
   const paymentMethod = (req.body.paymentMethod || '').trim();
+
+  const validProvinces = ['Khyber Pakhtunkhwa (KPK)', 'Sindh', 'Punjab', 'Balochistan'];
 
   const errors = {};
   if (!fullName) errors.fullName = 'Please enter the full name for delivery.';
+  if (!email) {
+    errors.email = 'Please enter your email address.';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errors.email = "That email address doesn't look right.";
+  }
   if (!phone) {
     errors.phone = 'Please enter a phone number so we can reach you about delivery.';
   } else if (!/^[0-9+\-\s()]{7,20}$/.test(phone)) {
@@ -224,6 +243,11 @@ router.post('/checkout', (req, res) => {
   }
   if (!address) errors.address = 'Please enter a delivery address.';
   if (!city) errors.city = 'Please enter a city.';
+  if (!province) {
+    errors.province = 'Please select a province.';
+  } else if (!validProvinces.includes(province)) {
+    errors.province = 'Please choose a valid province from the list.';
+  }
 
   if (!paymentMethod) {
     errors.paymentMethod = 'Please select a payment method.';
@@ -242,7 +266,7 @@ router.post('/checkout', (req, res) => {
       total,
       paymentMethods: config.paymentMethods,
       errors,
-      values: { fullName, phone, address, city, paymentMethod }
+      values: { fullName, email, phone, address, city, province, paymentMethod }
     });
   }
 
@@ -251,9 +275,11 @@ router.post('/checkout', (req, res) => {
   // customer pays the courier in cash on delivery.
   const order = db.createOrder({
     fullName,
+    email,
     phone,
     address,
     city,
+    province,
     paymentMethod,
     total,
     items: items.map(i => ({

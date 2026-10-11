@@ -11,7 +11,6 @@ module.exports = {
   port: process.env.PORT || 3000,
 
   // Public site URL — used to build robots.txt / sitemap.xml / canonical links.
-  // Change this to your real domain before going live.
   siteUrl: process.env.SITE_URL || 'https://petale-shop.vercel.app',
 
   // Rotating messages in the top announcement bar
@@ -36,13 +35,10 @@ module.exports = {
 
   contactEmail: 'hello@petale.example',
 
-  // Only Cash on Delivery is live for now. The other methods are shown in the
-  // checkout UI but disabled/marked "Not available yet". Flip these to true
-  // once a payment processor is actually wired up.
+  // Only Cash on Delivery is offered for now. To add another method later,
+  // add an entry here AND handle it in the checkout route in routes/public.js.
   paymentMethods: {
-    cod: { enabled: true, label: 'Cash on Delivery (COD)' },
-    card: { enabled: false, label: 'Credit / Debit Card' },
-    paypal: { enabled: false, label: 'PayPal' }
+    cod: { enabled: true, label: 'Cash on Delivery (COD)' }
   },
 
   // Default meta description used when a page doesn't set its own.

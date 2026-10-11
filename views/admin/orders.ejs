@@ -53,7 +53,7 @@
                 <%= o.customer.fullName %><br>
                 <a href="tel:<%= o.customer.phone %>" style="font-size:12px; color:var(--rose-deep);"><%= o.customer.phone %></a>
               </td>
-              <td style="max-width:220px; font-size:13px; color:var(--plum-soft);"><%= o.customer.address %>, <%= o.customer.city %></td>
+              <td style="max-width:220px; font-size:13px; color:var(--plum-soft);"><%= o.customer.address %>, <%= o.customer.city %><% if (o.customer.province) { %>, <%= o.customer.province %><% } %></td>
               <td style="font-size:13px; color:var(--plum-soft);"><%= o.items.reduce((s,i)=>s+i.qty,0) %> item<%= o.items.reduce((s,i)=>s+i.qty,0) === 1 ? '' : 's' %></td>
               <td>$<%= o.total %></td>
               <td><span class="status-pill status-<%= o.status %>"><%= o.status %></span></td>

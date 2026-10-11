@@ -5,6 +5,13 @@
     <h2>Your <em>bag</em></h2>
   </div>
 
+  <% if (typeof emptyCheckoutAttempt !== 'undefined' && emptyCheckoutAttempt) { %>
+    <div class="form-alert" role="alert" id="emptyCheckoutNotice">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>Your bag is empty — add at least one item before checking out.</span>
+    </div>
+  <% } %>
+
   <% if (items.length === 0) { %>
     <div class="empty-state">
       <svg viewBox="0 0 24 24" fill="none" stroke="#DF6B9C" stroke-width="1.4"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
@@ -12,28 +19,28 @@
       <p style="margin-top:16px;"><a href="/shop" class="btn-secondary">Browse the shop <span>→</span></a></p>
     </div>
   <% } else { %>
-    <div class="cart-layout">
-      <div class="cart-lines">
+    <div class="cart-layout" id="cartLayout">
+      <div class="cart-lines" id="cartLines">
         <% items.forEach(item => { %>
-          <div class="cart-line">
-            <div class="cart-line-visual">
+          <div class="cart-line" data-line="<%= item.product.id %>">
+            <a href="/product/<%= item.product.id %>" class="cart-line-visual" aria-label="<%= item.product.name %>">
               <% if (item.product.image) { %>
                 <img src="<%= item.product.image %>" alt="<%= item.product.name %>">
               <% } else { %>
                 <div class="product-placeholder" style="background:<%= item.product.accentColor %>;"><%= item.product.name.charAt(0) %></div>
               <% } %>
-            </div>
+            </a>
             <div class="cart-line-info">
               <h4><%= item.product.name %></h4>
-              <form class="qty-row" action="/cart/update/<%= item.product.id %>" method="POST">
-                <button type="submit" name="delta" value="-1" class="qty-btn">–</button>
-                <span><%= item.qty %></span>
-                <button type="submit" name="delta" value="1" class="qty-btn">+</button>
+              <form class="qty-row" action="/cart/update/<%= item.product.id %>" method="POST" data-cart-form="update" data-id="<%= item.product.id %>">
+                <button type="submit" name="delta" value="-1" class="qty-btn" aria-label="Decrease quantity" <%= item.qty <= 1 ? 'disabled' : '' %>>–</button>
+                <span class="qty-num" aria-live="polite"><%= item.qty %></span>
+                <button type="submit" name="delta" value="1" class="qty-btn" aria-label="Increase quantity">+</button>
               </form>
             </div>
-            <div>
-              <div class="cart-line-price">$<%= item.lineTotal %></div>
-              <form action="/cart/remove/<%= item.product.id %>" method="POST">
+            <div class="cart-line-side">
+              <div class="cart-line-price">$<span class="line-total"><%= item.lineTotal %></span></div>
+              <form action="/cart/remove/<%= item.product.id %>" method="POST" data-cart-form="remove" data-id="<%= item.product.id %>">
                 <button type="submit" class="remove-link" style="background:none;border:none;">Remove</button>
               </form>
             </div>
@@ -43,10 +50,10 @@
 
       <div class="summary-card">
         <h3>Order summary</h3>
-        <div class="summary-row"><span>Subtotal</span><span>$<%= total %></span></div>
+        <div class="summary-row"><span>Subtotal</span><span>$<span id="summarySubtotal"><%= total %></span></span></div>
         <div class="summary-row"><span>Shipping</span><span>Calculated at checkout</span></div>
-        <div class="summary-row total"><span>Total</span><span>$<%= total %></span></div>
-        <a href="/checkout" class="checkout-btn">Checkout <span>→</span></a>
+        <div class="summary-row total"><span>Total</span><span>$<span id="summaryTotal"><%= total %></span></span></div>
+        <a href="/checkout" class="checkout-btn" id="cartCheckoutBtn">Checkout <span>→</span></a>
       </div>
     </div>
   <% } %>

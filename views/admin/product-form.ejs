@@ -92,7 +92,7 @@
         </div>
 
         <div class="form-group full">
-          <label>Secondary image (optional — shown on hover in product grids)</label>
+          <label>Secondary image (optional — not currently shown; product cards keep the main image)</label>
           <div class="image-upload-row">
             <div class="image-preview" id="imagePreview2">
               <% if (product && product.image2) { %>
@@ -103,7 +103,7 @@
               <% } %>
             </div>
             <label class="file-input-label">
-              📷 Upload hover image
+              📷 Upload secondary image
               <input type="file" name="image2" accept="image/*" style="display:none;" id="imageInput2">
             </label>
           </div>

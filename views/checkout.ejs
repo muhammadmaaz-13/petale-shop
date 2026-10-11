@@ -23,6 +23,13 @@
       </div>
 
       <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" value="<%= values.email || '' %>" class="<%= errors && errors.email ? 'input-error' : '' %>" aria-invalid="<%= errors && errors.email ? 'true' : 'false' %>" required>
+        <% if (errors && errors.email) { %><p class="field-error"><%= errors.email %></p><% } %>
+        <p class="field-hint">We'll send your order confirmation here.</p>
+      </div>
+
+      <div class="form-group">
         <label for="phone">Phone number</label>
         <input type="tel" id="phone" name="phone" value="<%= values.phone || '' %>" class="<%= errors && errors.phone ? 'input-error' : '' %>" aria-invalid="<%= errors && errors.phone ? 'true' : 'false' %>" placeholder="e.g. +1 555 123 4567" required>
         <% if (errors && errors.phone) { %><p class="field-error"><%= errors.phone %></p><% } %>
@@ -35,10 +42,23 @@
         <% if (errors && errors.address) { %><p class="field-error"><%= errors.address %></p><% } %>
       </div>
 
-      <div class="form-group">
-        <label for="city">City</label>
-        <input type="text" id="city" name="city" value="<%= values.city || '' %>" class="<%= errors && errors.city ? 'input-error' : '' %>" aria-invalid="<%= errors && errors.city ? 'true' : 'false' %>" required>
-        <% if (errors && errors.city) { %><p class="field-error"><%= errors.city %></p><% } %>
+      <div class="form-row-split">
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" id="city" name="city" value="<%= values.city || '' %>" class="<%= errors && errors.city ? 'input-error' : '' %>" aria-invalid="<%= errors && errors.city ? 'true' : 'false' %>" required>
+          <% if (errors && errors.city) { %><p class="field-error"><%= errors.city %></p><% } %>
+        </div>
+
+        <div class="form-group">
+          <label for="province">Province</label>
+          <select id="province" name="province" class="<%= errors && errors.province ? 'input-error' : '' %>" aria-invalid="<%= errors && errors.province ? 'true' : 'false' %>" required>
+            <option value="" disabled <%= !values.province ? 'selected' : '' %>>Select province</option>
+            <% ['Khyber Pakhtunkhwa (KPK)', 'Sindh', 'Punjab', 'Balochistan'].forEach(p => { %>
+              <option value="<%= p %>" <%= values.province === p ? 'selected' : '' %>><%= p %></option>
+            <% }) %>
+          </select>
+          <% if (errors && errors.province) { %><p class="field-error"><%= errors.province %></p><% } %>
+        </div>
       </div>
 
       <h3 style="margin:28px 0 14px;">Payment method</h3>
@@ -59,7 +79,7 @@
         <% }) %>
       </div>
       <% if (errors && errors.paymentMethod) { %><p class="field-error"><%= errors.paymentMethod %></p><% } %>
-      <p class="field-hint" style="margin-top:6px;">Only Cash on Delivery is supported right now. Card and PayPal are coming soon.</p>
+      <p class="field-hint" style="margin-top:6px;">You pay in cash when your order is delivered.</p>
 
       <button type="submit" class="checkout-btn" style="margin-top:26px;">Place order (Cash on Delivery) <span>→</span></button>
     </form>

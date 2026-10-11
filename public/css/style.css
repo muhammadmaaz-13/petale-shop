@@ -188,11 +188,16 @@ header.scrolled nav{padding:14px 32px;}
 .compare-price{font-size:13px;color:var(--plum-soft);text-decoration:line-through;margin-right:8px;font-weight:400;}
 .price-row{display:flex;align-items:baseline;}
 
-/* ---------- PRODUCT IMAGE HOVER SWAP ---------- */
-.product-visual .img-primary,.product-visual .img-secondary{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:16px;transition:opacity 0.4s var(--ease), transform 0.5s var(--ease);}
-.product-visual .img-secondary{opacity:0;}
-.product-card:hover .product-visual .img-primary{opacity:0;}
-.product-card:hover .product-visual .img-secondary{opacity:1;transform:scale(1.05);}
+/* ---------- PRODUCT IMAGE HOVER EFFECT ----------
+   The photo never changes — on hover it zooms in slightly, brightens a touch,
+   and a soft light sweep glides across it. */
+.product-visual .img-primary{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:16px;transition:transform 0.7s var(--ease), filter 0.5s var(--ease);}
+.product-card:hover .product-visual .img-primary{transform:scale(1.1);filter:saturate(1.08) brightness(1.03);}
+.product-visual::after,.pd-visual::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.45) 50%, transparent 65%);transform:translateX(-120%);transition:transform 0.9s var(--ease);}
+.product-card:hover .product-visual::after,.pd-visual:hover::after{transform:translateX(120%);}
+.pd-visual{overflow:hidden;position:relative;}
+.pd-visual img{transition:transform 0.7s var(--ease), filter 0.5s var(--ease);}
+.pd-visual:hover img{transform:scale(1.06);filter:saturate(1.08) brightness(1.03);}
 
 @media (max-width:900px){
   .chat-bubble-label{display:none;}
@@ -536,6 +541,11 @@ body.mobile-menu-open{overflow:hidden;}
 /* ---------- CHECKOUT PAGE ---------- */
 .checkout-form{background:var(--cream);border-radius:24px;padding:36px;display:flex;flex-direction:column;gap:0;}
 .checkout-form .form-group{margin-bottom:18px;}
+.form-row-split{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+.form-row-split .form-group{margin-bottom:0;}
+@media (max-width:560px){
+  .form-row-split{grid-template-columns:1fr;}
+}
 .payment-options{display:flex;flex-direction:column;gap:10px;}
 .payment-option{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:14px;border:1px solid var(--line);background:white;font-size:14.5px;cursor:pointer;transition:border-color 0.3s;}
 .payment-option:has(input:checked){border-color:var(--rose-deep);background:var(--blush-soft);}
@@ -575,3 +585,50 @@ body.mobile-menu-open{overflow:hidden;}
   .footer-newsletter-row{padding:26px 22px;}
   .cookie-banner-inner p{max-width:100%;}
 }
+
+/* ---------- ADD-TO-BAG BUTTON FIX ----------
+   .add-btn (card button) used to override .btn-primary on the product page,
+   giving white text on a white background, stretched full width. */
+.add-btn{flex-shrink:0;white-space:nowrap;cursor:pointer;}
+.add-btn:disabled{opacity:0.7;cursor:wait;}
+.product-footer{gap:12px;}
+.price-row{white-space:nowrap;}
+.btn-primary.add-btn{display:inline-flex;justify-content:center;background:var(--plum);color:white;border-color:var(--plum);padding:16px 36px;font-size:15px;min-width:200px;}
+.btn-primary.add-btn:hover{border-color:var(--plum);}
+.btn-primary.add-btn.added{background:var(--rose-deep);border-color:var(--rose-deep);color:white;}
+.btn-primary.add-btn svg{width:16px;height:16px;}
+@media (max-width:560px){
+  .btn-primary.add-btn{display:flex;width:100%;}
+}
+
+/* ---------- CART PAGE: QUANTITY CONTROLS ---------- */
+.cart-line-visual{cursor:pointer;}
+.cart-line-visual img{transition:transform 0.6s var(--ease), filter 0.4s var(--ease);}
+.cart-line-visual:hover img{transform:scale(1.12);filter:saturate(1.1) brightness(1.03);}
+.cart-line .qty-row{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:100px;padding:4px;background:white;}
+.cart-line .qty-btn{width:30px;height:30px;font-size:16px;cursor:pointer;background:none;color:var(--plum);}
+.cart-line .qty-btn:hover:not(:disabled){background:var(--blush-soft);}
+.cart-line .qty-btn:disabled{opacity:0.35;cursor:not-allowed;}
+.cart-line .qty-num{min-width:30px;text-align:center;font-size:15px;font-weight:500;color:var(--plum);}
+.qty-num.bump{animation:qtyBump 0.3s var(--ease);}
+@keyframes qtyBump{0%{transform:scale(1);}50%{transform:scale(1.35);}100%{transform:scale(1);}}
+.cart-line-side{text-align:right;}
+.cart-line .remove-link{cursor:pointer;font-size:12.5px;color:var(--plum-soft);text-decoration:underline;margin-top:6px;padding:0;}
+.cart-line .remove-link:hover{color:var(--rose-deep);}
+.qty-row.is-busy,.cart-line-side form.is-busy{opacity:0.6;pointer-events:none;}
+.cart-line{transition:opacity 0.25s, transform 0.25s;}
+.cart-line.removing{opacity:0;transform:translateX(20px);}
+
+/* ---------- DRAWER: QUANTITY CONTROLS ---------- */
+.drawer-line-visual img{transition:transform 0.5s var(--ease), filter 0.4s var(--ease);}
+.drawer-line:hover .drawer-line-visual img{transform:scale(1.12);filter:saturate(1.1) brightness(1.03);}
+.drawer-qty{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--line);border-radius:100px;padding:2px;background:white;margin-top:2px;}
+.dq-btn{width:24px;height:24px;border-radius:50%;border:none;background:none;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--plum);transition:background 0.2s;}
+.dq-btn:hover:not(:disabled){background:var(--blush-soft);}
+.dq-btn:disabled{opacity:0.35;cursor:not-allowed;}
+.drawer-qty .dq-num{min-width:22px;text-align:center;font-size:13px;color:var(--plum);}
+.drawer-line-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.drawer-remove{background:none;border:none;padding:0;font-size:11.5px;color:var(--plum-soft);text-decoration:underline;cursor:pointer;}
+.drawer-remove:hover{color:var(--rose-deep);}
+.drawer-line.is-busy{opacity:0.55;pointer-events:none;}
+.cart-drawer-items.no-anim .drawer-line{animation:none;}

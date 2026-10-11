@@ -38,7 +38,9 @@
       <span class="btn-label">Add to bag</span>
     </button>
 
-    <p class="stock-note"><%= product.stock > 0 ? product.stock + ' in stock' : 'Currently out of stock' %></p>
+    <% if (!(product.stock > 0)) { %>
+      <p class="stock-note">Currently out of stock</p>
+    <% } %>
   </div>
 </section>
 

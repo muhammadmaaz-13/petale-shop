@@ -26,9 +26,10 @@
     <div class="order-card">
       <h3>Delivery details</h3>
       <p><strong><%= order.customer.fullName %></strong></p>
+      <p><a href="mailto:<%= order.customer.email %>" style="color:var(--rose-deep);"><%= order.customer.email %></a></p>
       <p><a href="tel:<%= order.customer.phone %>" style="color:var(--rose-deep);"><%= order.customer.phone %></a></p>
       <p><%= order.customer.address %></p>
-      <p><%= order.customer.city %></p>
+      <p><%= order.customer.city %><% if (order.customer.province) { %>, <%= order.customer.province %><% } %></p>
     </div>
 
     <div class="order-card">

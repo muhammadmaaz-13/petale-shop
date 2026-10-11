@@ -178,9 +178,11 @@ function createOrder(data) {
     paymentMethod: data.paymentMethod || 'cod',
     customer: {
       fullName: data.fullName || '',
+      email: data.email || '',
       phone: data.phone || '',
       address: data.address || '',
-      city: data.city || ''
+      city: data.city || '',
+      province: data.province || ''
     },
     items: data.items || [], // [{ productId, name, price, qty, lineTotal }]
     total: data.total || 0

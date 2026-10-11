@@ -99,16 +99,50 @@ document.querySelectorAll('#newsletterForm, [data-newsletter]').forEach(form => 
   if (!drawer || !cartBtn) return;
 
   function renderPlaceholder(name) {
-    const initial = (name || '?').charAt(0).toUpperCase();
+    const initial = esc((name || '?').charAt(0).toUpperCase());
     return '<div class="product-placeholder" style="width:100%;height:100%;font-size:20px;">' + initial + '</div>';
   }
 
-  function renderDrawer(data) {
+  // POST to a cart route and get the updated cart back as JSON.
+  async function cartRequest(path, body) {
+    const res = await fetch(path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(body || {})
+    });
+    if (!res.ok) throw new Error('Cart request failed (' + res.status + ')');
+    return res.json();
+  }
+  window.__cartRequest = cartRequest;
+
+  function esc(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // Keeps the header badge and the "is the bag empty?" flag in step with the server.
+  function syncCartCount(count) {
+    window.__cartCount = count;
+    const countEl = document.getElementById('cartCount');
+    if (countEl) {
+      countEl.textContent = count;
+      countEl.classList.toggle('show', count > 0);
+    }
+  }
+  window.__syncCartCount = syncCartCount;
+
+  // opts.quiet = true re-renders without replaying the slide-in animation
+  // (used for +/- clicks so the list doesn't flicker).
+  function renderDrawer(data, opts) {
     const itemsWrap = document.getElementById('drawerItems');
     const footer = document.getElementById('drawerFooter');
     const totalEl = document.getElementById('drawerTotal');
     const shipMsg = document.getElementById('shippingMsg');
     const progressFill = document.getElementById('progressFill');
+
+    itemsWrap.classList.toggle('no-anim', !!(opts && opts.quiet));
+    if (typeof data.cartCount === 'number') syncCartCount(data.cartCount);
 
     if (!data.items || data.items.length === 0) {
       itemsWrap.innerHTML = '<div class="cart-empty"><p>Your bag is empty.<br>Add something you\'ll love.</p></div>';
@@ -118,12 +152,19 @@ document.querySelectorAll('#newsletterForm, [data-newsletter]').forEach(form => 
       itemsWrap.innerHTML = data.items.map(item => {
         const p = item.product;
         const img = p.image
-          ? '<img src="' + p.image + '" alt="">'
+          ? '<img src="' + esc(p.image) + '" alt="">'
           : renderPlaceholder(p.name);
-        return '<div class="drawer-line">' +
-          '<div class="drawer-line-visual" style="background:' + (p.image ? 'transparent' : p.accentColor) + '">' + img + '</div>' +
-          '<div class="drawer-line-info"><h4>' + p.name + '</h4><span>Qty ' + item.qty + '</span></div>' +
-          '<div class="drawer-line-price">$' + item.lineTotal + '</div>' +
+        return '<div class="drawer-line" data-id="' + esc(p.id) + '">' +
+          '<div class="drawer-line-visual" style="background:' + (p.image ? 'transparent' : esc(p.accentColor)) + '">' + img + '</div>' +
+          '<div class="drawer-line-info"><h4>' + esc(p.name) + '</h4>' +
+            '<div class="drawer-qty">' +
+              '<button type="button" class="dq-btn" data-delta="-1" aria-label="Decrease quantity"' + (item.qty <= 1 ? ' disabled' : '') + '>–</button>' +
+              '<span class="dq-num">' + item.qty + '</span>' +
+              '<button type="button" class="dq-btn" data-delta="1" aria-label="Increase quantity">+</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="drawer-line-side"><div class="drawer-line-price">$' + item.lineTotal + '</div>' +
+            '<button type="button" class="drawer-remove" data-remove>Remove</button></div>' +
           '</div>';
       }).join('');
       totalEl.textContent = '$' + data.total;
@@ -158,6 +199,43 @@ document.querySelectorAll('#newsletterForm, [data-newsletter]').forEach(form => 
   cartBtn.addEventListener('click', openDrawer);
   if (closeBtn) closeBtn.addEventListener('click', closeDrawerFn);
   overlay.addEventListener('click', closeDrawerFn);
+
+  // Plus / minus / remove inside the drawer
+  const drawerItems = document.getElementById('drawerItems');
+  if (drawerItems) {
+    drawerItems.addEventListener('click', async (e) => {
+      const qtyBtn = e.target.closest('.dq-btn');
+      const removeBtn = e.target.closest('[data-remove]');
+      if (!qtyBtn && !removeBtn) return;
+      if (qtyBtn && qtyBtn.disabled) return;
+      const line = e.target.closest('.drawer-line');
+      if (!line || line.classList.contains('is-busy')) return;
+      line.classList.add('is-busy');
+      try {
+        const data = removeBtn
+          ? await cartRequest('/cart/remove/' + encodeURIComponent(line.dataset.id))
+          : await cartRequest('/cart/update/' + encodeURIComponent(line.dataset.id), { delta: parseInt(qtyBtn.dataset.delta, 10) });
+        if (data.ok) {
+          renderDrawer(data, { quiet: true });
+          document.dispatchEvent(new CustomEvent('cart:updated', { detail: data }));
+        }
+      } catch (err) {
+        console.error(err);
+        line.classList.remove('is-busy');
+        showToast("Couldn't update your bag — please try again.");
+      }
+    });
+  }
+
+  // Never go to checkout with nothing in the bag (drawer button and cart-page button)
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('#drawerCheckoutBtn, #cartCheckoutBtn');
+    if (!link) return;
+    if (!window.__cartCount) {
+      e.preventDefault();
+      showToast('Your bag is empty — add an item before checking out.');
+    }
+  });
 
   window.__openCartDrawer = openDrawer;
   window.__renderCartDrawer = renderDrawer;
